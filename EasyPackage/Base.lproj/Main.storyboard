@@ -11,9 +11,9 @@
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
                     <window key="window" title="Zyx打包工具" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="480" height="554"/>
+                        <rect key="contentRect" x="221" y="240" width="480" height="554"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                        <value key="minSize" type="size" width="480" height="554"/>
                     </window>
                     <connections>
                         <segue destination="XfG-lQ-9wD" kind="relationship" relationship="window.shadowedContentViewController" id="cq2-FE-JQM"/>
@@ -21,7 +21,7 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="12" y="78.5"/>
+            <point key="canvasLocation" x="-27" y="68"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -85,7 +85,7 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="selectDirectoryButton1Pressed:" target="XfG-lQ-9wD" id="8sK-xJ-tlU"/>
+                                                <action selector="selectProjectRootPath:" target="XfG-lQ-9wD" id="1Dg-mW-n1s"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -177,16 +177,16 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="selectDirectoryButton5Pressed:" target="XfG-lQ-9wD" id="iua-bx-kt4"/>
+                                                <action selector="selectProvisionProfilePathButtonPressed:" target="XfG-lQ-9wD" id="61s-MI-9a4"/>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kTp-Jn-Xzh">
-                                            <rect key="frame" x="10" y="139" width="266" height="17"/>
+                                            <rect key="frame" x="10" y="139" width="279" height="17"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="262" id="RBo-lq-dp4"/>
+                                                <constraint firstAttribute="width" constant="275" id="RBo-lq-dp4"/>
                                                 <constraint firstAttribute="height" constant="17" id="RGW-YY-hvA"/>
                                             </constraints>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="IPA文件默认生成在项目根路径下的IPA文件下" id="a7C-ph-PjC">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="IPA文件默认生成在项目根路径下的IPA文件夹下" id="a7C-ph-PjC">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -227,7 +227,7 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="selectDirectoryButton4Pressed:" target="XfG-lQ-9wD" id="P6t-rw-cvc"/>
+                                                <action selector="selectIPAPathButtonPressed:" target="XfG-lQ-9wD" id="m1X-8x-iQJ"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -270,20 +270,20 @@
                                     <rect key="frame" x="1" y="1" width="468" height="178"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tuU-lZ-3UE">
-                                            <rect key="frame" x="5" y="6" width="458" height="170"/>
-                                            <clipView key="contentView" ambiguous="YES" id="min-a4-MzG">
-                                                <rect key="frame" x="1" y="1" width="456" height="168"/>
+                                        <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tuU-lZ-3UE">
+                                            <rect key="frame" x="5" y="6" width="457" height="170"/>
+                                            <clipView key="contentView" id="min-a4-MzG">
+                                                <rect key="frame" x="1" y="1" width="455" height="168"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <textView ambiguous="YES" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="rkg-Jw-1IQ">
-                                                        <rect key="frame" x="0.0" y="0.0" width="458" height="168"/>
+                                                    <textView importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="rkg-Jw-1IQ">
+                                                        <rect key="frame" x="0.0" y="0.0" width="457" height="168"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="456" height="168"/>
+                                                        <size key="minSize" width="455" height="168"/>
                                                         <size key="maxSize" width="468" height="10000000"/>
                                                         <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="minSize" width="456" height="168"/>
+                                                        <size key="minSize" width="455" height="168"/>
                                                         <size key="maxSize" width="468" height="10000000"/>
                                                     </textView>
                                                 </subviews>
@@ -294,11 +294,17 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="3Rl-g6-L85">
-                                                <rect key="frame" x="441" y="1" width="16" height="168"/>
+                                                <rect key="frame" x="440" y="1" width="16" height="168"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                         </scrollView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="tuU-lZ-3UE" firstAttribute="leading" secondItem="Zmc-Az-T8C" secondAttribute="leading" constant="5" id="35l-Gn-TKC"/>
+                                        <constraint firstAttribute="trailing" secondItem="tuU-lZ-3UE" secondAttribute="trailing" constant="6" id="au8-pg-t2z"/>
+                                        <constraint firstItem="tuU-lZ-3UE" firstAttribute="top" secondItem="Zmc-Az-T8C" secondAttribute="top" constant="2" id="fYb-Go-gvT"/>
+                                        <constraint firstAttribute="bottom" secondItem="tuU-lZ-3UE" secondAttribute="bottom" constant="6" id="sty-Al-565"/>
+                                    </constraints>
                                 </view>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="190" id="rcf-Jd-h5W"/>
@@ -341,14 +347,15 @@
                     <connections>
                         <outlet property="codeSignTextField" destination="afm-Ny-Nm3" id="8m5-vs-CUZ"/>
                         <outlet property="ipaTextField" destination="toc-dX-zqc" id="gGZ-8c-sJm"/>
+                        <outlet property="outputTextView" destination="rkg-Jw-1IQ" id="Xwx-6d-h8F"/>
+                        <outlet property="packageButton" destination="EeO-sE-fcl" id="qVy-ts-pBZ"/>
                         <outlet property="profileTextField" destination="BRb-SF-vXr" id="obG-Gc-Ydd"/>
                         <outlet property="projectRootDirTextField" destination="rqQ-aj-IFM" id="geC-KM-uBW"/>
-                        <outlet property="projectTextField" destination="rqQ-aj-IFM" id="hBV-47-AaG"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="12" y="671"/>
+            <point key="canvasLocation" x="-35" y="885"/>
         </scene>
     </scenes>
 </document>
