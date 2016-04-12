@@ -50,7 +50,6 @@ typedef void (^SelectDialogHandler)(NSString *path);
 
 - (IBAction)packageButtonPressed:(NSButton *)button {
     button.enabled = NO;
-    
     self.codeSign = self.codeSignTextField.stringValue;
     
     [self makePackageTasks];
@@ -59,78 +58,14 @@ typedef void (^SelectDialogHandler)(NSString *path);
     [self executeTaskAsync:task];
 }
 
-
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
 // 所以找到如下方法，打开 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication 脚本,
 // 找到 --resource-rules= , 删除这个参数，打包就没有错误了
-
-
-#pragma mark - Uitl Methods
-
-- (void)executeTaskAsync:(NSTask *)task {
-    [task launch];
-    NSFileHandle *fileHandle = [task.standardOutput fileHandleForReading];
-    [fileHandle readInBackgroundAndNotifyForModes:@[NSRunLoopCommonModes]];
-}
-
-- (NSString *)executeTaskSync:(NSTask *)task {
-    [task launch];
-    
-    NSData *data = [[task.standardOutput fileHandleForReading] readDataToEndOfFile];
-    [task waitUntilExit];
-    
-    NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    return text;
-}
-
-- (NSTask *)asyncTaskWithShellCommand:(NSString *)shell {
-    NSString *shellCommand = [NSString stringWithFormat:@"/bin/sh -c '%@'", shell];
-    NSTask *task = [[NSTask alloc] init];
-    task.currentDirectoryPath = self.projectRootPath;
-    task.launchPath = @"/bin/sh";
-    task.arguments = @[@"-c", shellCommand];
-    task.standardOutput = [NSPipe pipe];
-    return task;
-}
-
-- (void)makePackageTasks {
-    NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _buildPath];
-    NSString *cleanProjectCommand = @"/usr/bin/xcodebuild clean -configuration Release";
-    // "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist
-    NSString *buildCommand = @"/usr/bin/xcodebuild \\"
-                                @"-workspace %@.xcworkspace \\"
-                                @"-scheme %@ \\"
-                                @"-configuration Release \\"
-                                @"-sdk iphoneos \\"
-                                @"OBJROOT=%@ TARGET_BUILD_DIR=%@ \\"
-//                                @"CODE_SIGN_RESOURCE_RULES_PATH=iphoneos/ResourceRules.plist \\"
-                                @"";
-    buildCommand = [NSString stringWithFormat:buildCommand, _projectName, _projectName, _buildPath, _buildPath];
-    NSString *makeIPAPathCommand = [NSString stringWithFormat:@"mkdir -p %@", self.ipaPath];
-    NSString *makeIPACommand = @"/usr/bin/xcrun -sdk iphoneos \\"
-                                @"PackageApplication \\"
-                                    @"-v %@/%@.app \\"
-                                    @"-o %@/%@.ipa \\"
-                                    @"--sign \"%@\" \\"
-                                    @"--embed \"%@\"";
-    makeIPACommand = [NSString stringWithFormat:makeIPACommand, _buildPath, _projectName, _ipaPath, _projectName, _codeSign, _provisionProfilePath];
-    
-    NSArray *tasks = @[[self asyncTaskWithShellCommand:rmBuildCommand],
-                       [self asyncTaskWithShellCommand:cleanProjectCommand],
-                       [self asyncTaskWithShellCommand:buildCommand],
-                       [self copyStaticLibrariesTask],
-                       [self asyncTaskWithShellCommand:makeIPAPathCommand],
-                       [self asyncTaskWithShellCommand:makeIPACommand],
-                       [self asyncTaskWithShellCommand:rmBuildCommand],
-                       ];
-    self.tasks = [NSMutableArray arrayWithArray:tasks];
-}
 
 #pragma mark - NSTask output notification
 
 - (void)output:(NSNotification *)notification {
     NSFileHandle *fileHandle = notification.object;
-//    NSDictionary *userInfo = notification.userInfo;
     
     NSData *data = nil;
     while ((data = fileHandle.availableData) && data.length > 0) {
@@ -156,9 +91,12 @@ BOOL needTerminateTask = NO;
         
         if (self.tasks.count == 0) {
             self.packageButton.enabled = YES;
+            index = 1;
             return;
         } else if (!needTerminateTask) {
             [self executeTaskAsync:self.tasks.firstObject];
+        } else {
+            index = 1;
         }
     } else {
         needTerminateTask = YES;
@@ -170,7 +108,85 @@ BOOL needTerminateTask = NO;
     index++;
 }
 
-#pragma mark - Make Command
+#pragma mark - Uitl Methods
+
+- (void)executeTaskAsync:(NSTask *)task {
+    [task launch];
+    NSFileHandle *fileHandle = [task.standardOutput fileHandleForReading];
+    [fileHandle readInBackgroundAndNotifyForModes:@[NSRunLoopCommonModes]];
+}
+
+- (NSString *)executeTaskSync:(NSTask *)task {
+    [task launch];
+    
+    NSData *data = [[task.standardOutput fileHandleForReading] readDataToEndOfFile];
+    [task waitUntilExit];
+    
+    NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return text;
+}
+
+- (NSTask *)asyncTaskWithShellCommand:(NSString *)shell {
+    NSTask *task = [[NSTask alloc] init];
+    task.currentDirectoryPath = self.projectRootPath;
+    task.launchPath = @"/bin/sh";
+    task.arguments = @[@"-c", shell];
+    task.standardOutput = [NSPipe pipe];
+    return task;
+}
+
+- (void)makePackageTasks {
+    NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _buildPath];
+    NSString *cleanProjectCommand = @"/usr/bin/xcodebuild clean -configuration Release";
+    
+    NSString *buildCommand = [self buildCommand];
+    NSString *makeIPAPathCommand = [NSString stringWithFormat:@"mkdir -p %@", self.ipaPath];
+    NSString *makeIPACommand = @"/usr/bin/xcrun -sdk iphoneos \\"
+                                @"PackageApplication \\"
+                                @"-v %@/%@.app \\"
+                                @"-o %@/%@.ipa \\"
+                                @"--sign \"%@\" \\"
+                                @"--embed \"%@\"";
+    makeIPACommand = [NSString stringWithFormat:makeIPACommand, _buildPath, _projectName, _ipaPath, _projectName, _codeSign, _provisionProfilePath];
+    
+    NSArray *tasks = @[[self asyncTaskWithShellCommand:rmBuildCommand],
+                       [self asyncTaskWithShellCommand:cleanProjectCommand],
+                       [self asyncTaskWithShellCommand:buildCommand],
+                       [self copyStaticLibrariesTask],
+                       [self asyncTaskWithShellCommand:makeIPAPathCommand],
+                       [self asyncTaskWithShellCommand:makeIPACommand],
+                       [self asyncTaskWithShellCommand:rmBuildCommand],
+                       ];
+    self.tasks = [NSMutableArray arrayWithArray:tasks];
+}
+
+// "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist
+- (NSString *)buildCommand {
+    NSString *buildCommand = @"";
+    if (self.isWorkspace) {
+        buildCommand = @"/usr/bin/xcodebuild \\"
+        @"-workspace %@.xcworkspace \\"
+        @"-scheme %@ \\"
+        @"-configuration Release \\"
+        @"-sdk iphoneos \\"
+        @"OBJROOT=%@ \\"
+        @"TARGET_BUILD_DIR=%@ \\"
+        // @"CODE_SIGN_RESOURCE_RULES_PATH=iphoneos/ResourceRules.plist \\"
+        @"";
+        buildCommand = [NSString stringWithFormat:buildCommand, _projectName, _projectName, _buildPath, _buildPath];
+    } else {
+        buildCommand = @"/usr/bin/xcodebuild \\"
+        @"-target %@ \\"
+        @"-configuration Release \\"
+        @"-sdk iphoneos \\"
+        @"OBJROOT=%@ \\"
+        @"TARGET_BUILD_DIR=%@ \\"
+        // @"CODE_SIGN_IDENTITY=iphoneos/ResourceRules.plist \\"
+        @"";
+        buildCommand = [NSString stringWithFormat:buildCommand, _projectName, _buildPath, _buildPath];
+    }
+    return buildCommand;
+}
 
 - (NSTask *)copyStaticLibrariesTask {
     NSMutableString *commandString = [NSMutableString string];
@@ -190,10 +206,31 @@ BOOL needTerminateTask = NO;
     [self selectPathInTextField:self.projectRootDirTextField];
     self.projectRootPath = self.projectRootDirTextField.stringValue;
     self.buildPath = [self.projectRootPath stringByAppendingPathComponent:@"build"];
+    self.ipaPath = [self.projectRootPath stringByAppendingPathComponent:@"ipa"];
     
     [self getProjectInfo];
     [self searchStaticLibraries];
 }
+
+// IPA Path
+- (IBAction)selectIPAPathButtonPressed:(NSButton *)button {
+    [self selectPathInTextField:self.ipaTextField];
+    NSString *path = self.ipaTextField.stringValue;
+    if (path.length != 0) {
+        self.ipaPath = path;
+    }
+}
+
+// Profile File
+- (IBAction)selectProvisionProfilePathButtonPressed:(NSButton *)button {
+    [self selectFileInTextField:self.profileTextField];
+    NSString *path = self.profileTextField.stringValue;
+    if (path.length != 0) {
+        self.provisionProfilePath = path;
+    }
+}
+
+#pragma mark -
 
 - (void)searchStaticLibraries {
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -216,28 +253,20 @@ BOOL needTerminateTask = NO;
     NSURL *url = [NSURL fileURLWithPath:self.projectRootPath];
     NSDirectoryEnumerator<NSURL *> *urls = [fileManager enumeratorAtURL:url includingPropertiesForKeys:@[] options:NSDirectoryEnumerationSkipsSubdirectoryDescendants | NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
     
-    BOOL isWorkspace = NO;
+    NSString *workspaceName = @"", *projectName = @"";
     for (NSURL *url in urls) {
         NSString *name = url.path.lastPathComponent;
         if ([name hasSuffix:@".xcworkspace"]) {
-            isWorkspace = YES;
-            self.projectName = [name stringByDeletingPathExtension];
-            break;
+            workspaceName = [name stringByDeletingPathExtension];
+            continue;
+        }
+        if ([name hasSuffix:@".xcodeproj"]) {
+            projectName = [name stringByDeletingPathExtension];
+            continue;
         }
     }
-    self.isWorkspace = isWorkspace;
-}
-
-// IPA Path
-- (IBAction)selectIPAPathButtonPressed:(NSButton *)button {
-    [self selectPathInTextField:self.ipaTextField];
-    self.ipaPath = self.ipaTextField.stringValue;
-}
-
-// Profile File
-- (IBAction)selectProvisionProfilePathButtonPressed:(NSButton *)button {
-    [self selectFileInTextField:self.profileTextField];
-    self.provisionProfilePath = self.profileTextField.stringValue;
+    self.projectName = projectName;
+    self.isWorkspace = workspaceName.length > 0 && projectName.length > 0;
 }
 
 - (void)selectPathInTextField:(NSTextField *)textField {
@@ -276,6 +305,7 @@ BOOL needTerminateTask = NO;
         case ZyxSelectDialogTypeDirectory:
             dialog.canChooseFiles = NO;
             dialog.canChooseDirectories = YES;
+            dialog.canCreateDirectories = YES;
             break;
         default:
             break;
