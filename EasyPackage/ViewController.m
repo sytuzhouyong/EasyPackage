@@ -244,6 +244,11 @@ BOOL needTerminateTask = NO;
 #pragma mark - Button Action
 
 - (IBAction)packageButtonPressed:(NSButton *)button {
+    if (self.buildPath.length == 0) {
+        [self showErrorAlertWithMessage:@"请设置工程根目录"];
+        return;
+    }
+    
     button.enabled = NO;
     self.outputTextView.string = @"";
     self.codeSign = self.codeSignTextField.stringValue;
