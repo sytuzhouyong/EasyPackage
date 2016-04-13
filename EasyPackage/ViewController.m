@@ -58,8 +58,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
     
     NSString *buildCommand = [self buildCommand];
     NSString *makeIPAPathCommand = [NSString stringWithFormat:@"mkdir -p %@", self.ipaPath];
-    NSString *makeIPACommand = @"/usr/bin/xcrun -sdk iphoneos PackageApplication -v %@/%@.app -o %@/%@.ipa --embed %@ --sign \"%@\"";
-    makeIPACommand = [NSString stringWithFormat:makeIPACommand, _buildPath, _projectName, _ipaPath, _projectName, _provisionProfilePath, _codeSign];
+    NSString *makeIPACommand = [self makeIPACommand];
     
     NSArray *tasks = @[[self asyncTaskWithShellCommand:rmBuildCommand],
                        [self asyncTaskWithShellCommand:cleanProjectCommand],
@@ -76,15 +75,13 @@ typedef void (^SelectDialogHandler)(NSString *path);
 
 // "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist
 - (NSString *)buildCommand {
-    NSString *UUID = [self UUIDFromProvisionProfileAtPath:self.provisionProfilePath];
-    NSString *commonCommand = [NSString stringWithFormat:@""
-        @"-configuration Release "
-        @"-sdk iphoneos "
-        @"OBJROOT=%@ "
-        @"TARGET_BUILD_DIR=%@ "
+    NSMutableString *commonCommand = [NSMutableString stringWithFormat:@"-configuration Release -sdk iphoneos OBJROOT=%@ TARGET_BUILD_DIR=%@ ", _buildPath, _buildPath];
         // @"CODE_SIGN_IDENTITY=iphoneos/ResourceRules.plist \\"
-        @"CODE_SIGN_IDENTITY=\"%@\" "
-        @"PROVISIONING_PROFILE=%@", _buildPath, _buildPath, _codeSign, UUID];
+    
+    if (_codeSign.length > 0 && _provisionProfilePath.length > 0) {
+        NSString *UUID = [self UUIDFromProvisionProfileAtPath:self.provisionProfilePath];
+        [commonCommand appendFormat:@"CODE_SIGN_IDENTITY=\"%@\" PROVISIONING_PROFILE=%@ ", _codeSign, UUID];
+    }
     
     NSString *differentParamString = nil;
     if (self.isWorkspace) {
@@ -94,6 +91,14 @@ typedef void (^SelectDialogHandler)(NSString *path);
     }
     
     NSString *command = [NSString stringWithFormat:@"/usr/bin/xcodebuild %@ %@", differentParamString, commonCommand];
+    return command;
+}
+
+- (NSString *)makeIPACommand {
+    NSMutableString *command = [NSMutableString stringWithFormat:@"/usr/bin/xcrun -sdk iphoneos PackageApplication -v %@/%@.app -o %@/%@.ipa", _buildPath, _projectName, _ipaPath, _projectName];
+    if (_codeSign.length > 0 && _provisionProfilePath.length > 0) {
+        [command appendFormat:@"--embed %@ --sign \"%@\"", _provisionProfilePath, _codeSign];
+    }
     return command;
 }
 
