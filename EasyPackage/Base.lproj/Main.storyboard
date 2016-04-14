@@ -160,7 +160,7 @@
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="22" id="9kh-PQ-6DC"/>
                                             </constraints>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="iPhone Distribution: ZTE CORPORATION" drawsBackground="YES" id="m9h-DK-Smc">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="m9h-DK-Smc">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -324,7 +324,7 @@
                                     <font key="font" size="13" name="STHeitiSC-Light"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="packageButtonPressed:" target="XfG-lQ-9wD" id="pgH-2Y-kLJ"/>
+                                    <action selector="cancelPackageButtonPressed:" target="XfG-lQ-9wD" id="3iY-9m-5k8"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -345,6 +345,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="cancelButton" destination="iVE-1L-CCD" id="ixb-BC-ued"/>
                         <outlet property="codeSignTextField" destination="afm-Ny-Nm3" id="8m5-vs-CUZ"/>
                         <outlet property="ipaTextField" destination="toc-dX-zqc" id="gGZ-8c-sJm"/>
                         <outlet property="outputTextView" destination="rkg-Jw-1IQ" id="Xwx-6d-h8F"/>

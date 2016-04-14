@@ -17,23 +17,26 @@ typedef void (^SelectDialogHandler)(NSString *path);
 
 @interface ViewController ()
 
+@property (nonatomic, strong) dispatch_queue_t packageQueue;
+
 @property (nonatomic, strong) IBOutlet NSTextField *projectRootDirTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *ipaTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *codeSignTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *profileTextField;
 @property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
 @property (nonatomic, strong) IBOutlet NSButton *packageButton;
+@property (nonatomic, strong) IBOutlet NSButton *cancelButton;
 
 @property (nonatomic, strong) NSMutableArray<NSTask *> *tasks;
-
 @property (nonatomic, copy) NSString *projectRootPath;
 @property (nonatomic, copy) NSString *projectName;
 @property (nonatomic, copy) NSString *buildPath;
 @property (nonatomic, copy) NSString *ipaPath;
-@property (nonatomic, copy) NSString *codeSign;
+@property (nonatomic, copy) NSString *codeSign;  // iPhone Distribution: ZTE CORPORATION
 @property (nonatomic, copy) NSString *provisionProfilePath;
 @property (nonatomic, strong) NSArray<NSString *> *libraryPaths;
 @property (nonatomic, assign) BOOL isWorkspace;
+@property (nonatomic, assign) BOOL isCanceled;
 
 @end
 
@@ -45,6 +48,8 @@ typedef void (^SelectDialogHandler)(NSString *path);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(output:) name:NSFileHandleReadCompletionNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidTerminated:) name:NSTaskDidTerminateNotification object:nil];
+    
+    self.packageQueue = dispatch_queue_create("zyx.EasyPackageQueue", DISPATCH_QUEUE_SERIAL);
 }
 
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
@@ -115,18 +120,25 @@ typedef void (^SelectDialogHandler)(NSString *path);
 
 #pragma mark - Uitl Methods
 
-- (void)executeTaskAsync:(NSTask *)task {
-    [task launch];
-    NSFileHandle *fileHandle = [task.standardOutput fileHandleForReading];
-    [fileHandle readInBackgroundAndNotifyForModes:@[NSRunLoopCommonModes]];
+- (void)executeTaskAsync:(NSTask *)task result:(void (^)(NSString *result))resultBlock {
+    dispatch_async(self.packageQueue, ^{
+        NSLog(@"task started");
+        [task launch];
+        [task waitUntilExit];
+        NSFileHandle *fileHandle = [task.standardOutput fileHandleForReading];
+        NSData *data = [fileHandle readDataToEndOfFile];
+        NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (resultBlock) {
+            resultBlock(text);
+        }
+        NSLog(@"task end");
+    });
 }
 
 - (NSString *)executeTaskSync:(NSTask *)task {
     [task launch];
-    
-    NSData *data = [[task.standardOutput fileHandleForReading] readDataToEndOfFile];
     [task waitUntilExit];
-    
+    NSData *data = [[task.standardOutput fileHandleForReading] readDataToEndOfFile];
     NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     return text;
 }
@@ -202,43 +214,64 @@ typedef void (^SelectDialogHandler)(NSString *path);
     
     NSData *data = nil;
     while ((data = fileHandle.availableData) && data.length > 0) {
+        NSTask *task = self.tasks.firstObject;
+        if (self.isCanceled && task != nil) {
+            NSLog(@"cancel task, so terminate task[%@]", task);
+            [task terminate];
+            break;
+        }
+        
         NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSLog(@"text = %@", text);
         
         NSString *string = [NSString stringWithFormat:@"%@%@", self.outputTextView.string, text];
         self.outputTextView.string = string;
-        // [self.outputTextView scrollRangeToVisible:NSMakeRange(NSUIntegerMax, 1)];
+        [self.outputTextView scrollRangeToVisible:NSMakeRange(self.outputTextView.string.length, 1)];
     }
 }
-
-BOOL needTerminateTask = NO;
 
 - (void)taskDidTerminated:(NSNotification *)notification {
     static int index = 1;
     NSTask *task = notification.object;
     int status = [task terminationStatus];
     
+    NSLog(@"task[%@] terminate reason: %@", @(index), @(task.terminationReason));
+    
+    if (self.isCanceled) {
+        NSLog(@"cancel next task[%@], so return", @(index));
+        self.cancelButton.enabled = YES;
+        self.packageButton.enabled = YES;
+        // 不知道为什么加了这句，取消打包就崩溃
+//        [self executeTaskSync:self.tasks.lastObject];
+        self.isCanceled = NO;
+        return;
+    }
+    
     if (status == 0) {
-        NSLog(@"Task[%@] succeeded.", @(index));
-        [self.tasks removeObject:task];
+        NSLog(@"Task[%@] finished.", @(index));
+        if (self.tasks.count != 0) {
+            [self.tasks removeObjectAtIndex:0];
+        }
         
         if (self.tasks.count == 0) {
             self.packageButton.enabled = YES;
             index = 1;
             return;
-        } else if (!needTerminateTask) {
-            [self executeTaskAsync:self.tasks.firstObject];
         } else {
-            index = 1;
+            __weak __typeof(&*self) weakself = self;
+            [self executeTaskAsync:self.tasks.firstObject result:^(NSString *result) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    weakself.outputTextView.string = [NSString stringWithFormat:@"%@%@", weakself.outputTextView.string, result];
+                });
+            }];
+            index++;
         }
     } else {
-        needTerminateTask = YES;
-        
-        NSLog(@"Task[%@] failed. task = %@", @(index), task);
+        NSLog(@"Task[%@] failed.", @(index));
         self.packageButton.enabled = YES;
-        [self executeTaskAsync:self.tasks.lastObject];
+        self.cancelButton.enabled = YES;
+        [self executeTaskSync:self.tasks.lastObject];
     }
-    index++;
 }
 
 #pragma mark - Button Action
@@ -256,13 +289,33 @@ BOOL needTerminateTask = NO;
     [self makePackageTasks];
     
     NSTask *task = self.tasks.firstObject;
-    [self executeTaskAsync:task];
+    
+    __weak __typeof(&*self) weakself = self;
+    [self executeTaskAsync:task result:^(NSString *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakself.outputTextView.string = [NSString stringWithFormat:@"%@%@", weakself.outputTextView.string, result];
+        });
+    }];
+}
+
+- (IBAction)cancelPackageButtonPressed:(NSButton *)button {
+    if (self.tasks.count == 0) {
+        return;
+    }
+    
+    self.isCanceled = YES;
+    button.enabled = NO;
 }
 
 // 项目根目录
 - (IBAction)selectProjectRootPath:(NSButton *)button {
     [self selectPathInTextField:self.projectRootDirTextField];
     self.projectRootPath = self.projectRootDirTextField.stringValue;
+    
+    if (self.projectRootPath.length == 0) {
+        return;
+    }
+    
     self.buildPath = [self.projectRootPath stringByAppendingPathComponent:@"build"];
     self.ipaPath = [self.projectRootPath stringByAppendingPathComponent:@"ipa"];
     
