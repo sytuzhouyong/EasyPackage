@@ -10,6 +10,13 @@
 
 @interface ViewController : NSViewController
 
+@property (nonatomic, strong) IBOutlet NSTextField *projectRootDirTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *ipaTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *codeSignTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *profileTextField;
+@property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
+@property (nonatomic, strong) IBOutlet NSButton *packageButton;
+@property (nonatomic, strong) IBOutlet NSButton *cancelButton;
 
 @end
 

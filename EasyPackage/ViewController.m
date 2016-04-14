@@ -18,15 +18,6 @@ typedef void (^SelectDialogHandler)(NSString *path);
 @interface ViewController ()
 
 @property (nonatomic, strong) dispatch_queue_t packageQueue;
-
-@property (nonatomic, strong) IBOutlet NSTextField *projectRootDirTextField;
-@property (nonatomic, strong) IBOutlet NSTextField *ipaTextField;
-@property (nonatomic, strong) IBOutlet NSTextField *codeSignTextField;
-@property (nonatomic, strong) IBOutlet NSTextField *profileTextField;
-@property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
-@property (nonatomic, strong) IBOutlet NSButton *packageButton;
-@property (nonatomic, strong) IBOutlet NSButton *cancelButton;
-
 @property (nonatomic, strong) NSMutableArray<NSTask *> *tasks;
 @property (nonatomic, copy) NSString *projectRootPath;
 @property (nonatomic, copy) NSString *projectName;
@@ -55,7 +46,6 @@ typedef void (^SelectDialogHandler)(NSString *path);
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
 // 所以找到如下方法，打开 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication 脚本,
 // 找到 --resource-rules= , 删除这个参数，打包就没有错误了
-
 
 - (void)makePackageTasks {
     NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _buildPath];
@@ -129,7 +119,9 @@ typedef void (^SelectDialogHandler)(NSString *path);
         NSData *data = [fileHandle readDataToEndOfFile];
         NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         if (resultBlock) {
-            resultBlock(text);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                resultBlock(text);
+            });
         }
         NSLog(@"task end");
     });
@@ -230,6 +222,8 @@ typedef void (^SelectDialogHandler)(NSString *path);
     }
 }
 
+// 此方法所在线程和[task launch]时所在线程是一样的
+// 这里就是在 packageQueue 中
 - (void)taskDidTerminated:(NSNotification *)notification {
     static int index = 1;
     NSTask *task = notification.object;
@@ -237,48 +231,55 @@ typedef void (^SelectDialogHandler)(NSString *path);
     
     NSLog(@"task[%@] terminate reason: %@", @(index), @(task.terminationReason));
     
-    if (self.isCanceled) {
-        NSLog(@"cancel next task[%@], so return", @(index));
-        self.cancelButton.enabled = YES;
-        self.packageButton.enabled = YES;
-        // 不知道为什么加了这句，取消打包就崩溃
-//        [self executeTaskSync:self.tasks.lastObject];
-        self.isCanceled = NO;
-        return;
-    }
-    
-    if (status == 0) {
-        NSLog(@"Task[%@] finished.", @(index));
-        if (self.tasks.count != 0) {
-            [self.tasks removeObjectAtIndex:0];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.isCanceled) {
+            NSLog(@"cancel next task[%@], so return", @(index));
+            self.cancelButton.enabled = YES;
+            self.packageButton.enabled = YES;
+            // 不知道为什么加了这句，取消打包就崩溃
+    //        [self executeTaskSync:self.tasks.lastObject];
+            self.isCanceled = NO;
+            
+            [self showAlertWithMessage:@"取消打包成功"];
+            return;
         }
         
-        if (self.tasks.count == 0) {
-            self.packageButton.enabled = YES;
-            index = 1;
-            return;
-        } else {
-            __weak __typeof(&*self) weakself = self;
-            [self executeTaskAsync:self.tasks.firstObject result:^(NSString *result) {
-                dispatch_async(dispatch_get_main_queue(), ^{
+        if (status == 0) {
+            NSLog(@"Task[%@] finished.", @(index));
+            if (self.tasks.count != 0) {
+                [self.tasks removeObjectAtIndex:0];
+            }
+            
+            if (self.tasks.count == 0) {
+                self.packageButton.enabled = YES;
+                index = 1;
+                
+                NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@.ipa", self.ipaPath, self.projectName];
+                [self showAlertWithMessage:message];
+                return;
+            } else {
+                __weak __typeof(&*self) weakself = self;
+                [self executeTaskAsync:self.tasks.firstObject result:^(NSString *result) {
                     weakself.outputTextView.string = [NSString stringWithFormat:@"%@%@", weakself.outputTextView.string, result];
-                });
-            }];
-            index++;
+                    [weakself.outputTextView scrollRangeToVisible:NSMakeRange(weakself.outputTextView.string.length, 1)];
+                }];
+                index++;
+            }
+        } else {
+            NSLog(@"Task[%@] failed.", @(index));
+            self.packageButton.enabled = YES;
+            self.cancelButton.enabled = YES;
+            [self executeTaskSync:self.tasks.lastObject];
+            [self showAlertWithMessage:@"打包失败"];
         }
-    } else {
-        NSLog(@"Task[%@] failed.", @(index));
-        self.packageButton.enabled = YES;
-        self.cancelButton.enabled = YES;
-        [self executeTaskSync:self.tasks.lastObject];
-    }
+    });
 }
 
 #pragma mark - Button Action
 
 - (IBAction)packageButtonPressed:(NSButton *)button {
     if (self.buildPath.length == 0) {
-        [self showErrorAlertWithMessage:@"请设置工程根目录"];
+        [self showAlertWithMessage:@"请设置工程根目录"];
         return;
     }
     
@@ -292,9 +293,8 @@ typedef void (^SelectDialogHandler)(NSString *path);
     
     __weak __typeof(&*self) weakself = self;
     [self executeTaskAsync:task result:^(NSString *result) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakself.outputTextView.string = [NSString stringWithFormat:@"%@%@", weakself.outputTextView.string, result];
-        });
+        weakself.outputTextView.string = [NSString stringWithFormat:@"%@%@", weakself.outputTextView.string, result];
+        [weakself.outputTextView scrollRangeToVisible:NSMakeRange(weakself.outputTextView.string.length, 1)];
     }];
 }
 
@@ -359,9 +359,9 @@ typedef void (^SelectDialogHandler)(NSString *path);
     }];
 }
 
-- (void)showErrorAlertWithMessage:(NSString *)message {
+- (void)showAlertWithMessage:(NSString *)message {
     NSAlert *alert = [[NSAlert alloc] init];
-    alert.messageText = @"出错啦！";
+    alert.messageText = @"提示";
     alert.informativeText = message;
     [alert addButtonWithTitle:@"确定"];
     [alert runModal];
