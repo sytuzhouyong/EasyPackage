@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		25076B0D1CC097D400DFCE3B /* ZyxIOSProjectInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 25076B0C1CC097D400DFCE3B /* ZyxIOSProjectInfo.m */; };
 		25076B101CC0C36E00DFCE3B /* ZyxTaskUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 25076B0F1CC0C36E00DFCE3B /* ZyxTaskUtil.m */; };
+		25076B131CC0CC6300DFCE3B /* ZyxPackageConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 25076B121CC0CC6300DFCE3B /* ZyxPackageConfig.m */; };
 		25C302CA1CBBC16500F323DE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C302C91CBBC16500F323DE /* AppDelegate.m */; };
 		25C302CD1CBBC16500F323DE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C302CC1CBBC16500F323DE /* main.m */; };
 		25C302D01CBBC16500F323DE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C302CF1CBBC16500F323DE /* ViewController.m */; };
@@ -21,6 +22,8 @@
 		25076B0C1CC097D400DFCE3B /* ZyxIOSProjectInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxIOSProjectInfo.m; sourceTree = "<group>"; };
 		25076B0E1CC0C36E00DFCE3B /* ZyxTaskUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxTaskUtil.h; sourceTree = "<group>"; };
 		25076B0F1CC0C36E00DFCE3B /* ZyxTaskUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxTaskUtil.m; sourceTree = "<group>"; };
+		25076B111CC0CC6300DFCE3B /* ZyxPackageConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxPackageConfig.h; sourceTree = "<group>"; };
+		25076B121CC0CC6300DFCE3B /* ZyxPackageConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxPackageConfig.m; sourceTree = "<group>"; };
 		25C302C51CBBC16500F323DE /* EasyPackage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyPackage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25C302C81CBBC16500F323DE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		25C302C91CBBC16500F323DE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -74,6 +77,8 @@
 				25076B0C1CC097D400DFCE3B /* ZyxIOSProjectInfo.m */,
 				25076B0E1CC0C36E00DFCE3B /* ZyxTaskUtil.h */,
 				25076B0F1CC0C36E00DFCE3B /* ZyxTaskUtil.m */,
+				25076B111CC0CC6300DFCE3B /* ZyxPackageConfig.h */,
+				25076B121CC0CC6300DFCE3B /* ZyxPackageConfig.m */,
 			);
 			path = EasyPackage;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 			files = (
 				25076B101CC0C36E00DFCE3B /* ZyxTaskUtil.m in Sources */,
 				25C302D01CBBC16500F323DE /* ViewController.m in Sources */,
+				25076B131CC0CC6300DFCE3B /* ZyxPackageConfig.m in Sources */,
 				25076B0D1CC097D400DFCE3B /* ZyxIOSProjectInfo.m in Sources */,
 				25C302CD1CBBC16500F323DE /* main.m in Sources */,
 				25C302CA1CBBC16500F323DE /* AppDelegate.m in Sources */,
