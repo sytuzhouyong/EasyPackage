@@ -293,8 +293,10 @@ typedef void (^SelectDialogHandler)(NSString *path);
     
     __weak __typeof(&*self) weakself = self;
     [self executeTaskAsync:task result:^(NSString *result) {
-        weakself.outputTextView.string = [NSString stringWithFormat:@"%@%@", weakself.outputTextView.string, result];
-        [weakself.outputTextView scrollRangeToVisible:NSMakeRange(weakself.outputTextView.string.length, 1)];
+        NSString *text = weakself.outputTextView.string;
+        text = [NSString stringWithFormat:@"%@%@", text, result];
+        weakself.outputTextView.string = text;
+        [weakself.outputTextView scrollRangeToVisible:NSMakeRange(text.length, 1)];
     }];
 }
 
