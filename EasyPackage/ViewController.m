@@ -37,7 +37,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(output:) name:NSFileHandleDataAvailableNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(output:) name:NSFileHandleReadCompletionNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidTerminated:) name:NSTaskDidTerminateNotification object:nil];
     
     self.packageQueue = dispatch_queue_create("zyx.EasyPackageQueue", DISPATCH_QUEUE_SERIAL);
@@ -115,7 +115,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
     [task launch];
     
     NSFileHandle *fileHandle = (NSFileHandle *)[task.standardOutput fileHandleForReading];
-    [fileHandle waitForDataInBackgroundAndNotify];
+    [fileHandle readInBackgroundAndNotify];
 }
 
 - (NSString *)executeTaskSync:(NSTask *)task {
@@ -193,17 +193,17 @@ typedef void (^SelectDialogHandler)(NSString *path);
 #pragma mark - NSTask output notification
 
 - (void)output:(NSNotification *)notification {
-    NSFileHandle *fileHandle = notification.object;
-    
-    NSData *data = fileHandle.availableData;
-    if (data.length > 0) {
-        NSTask *task = self.tasks.firstObject;
-        if (self.isCanceled && task != nil) {
-            NSLog(@"cancel task, so terminate task[%@]", task);
-            [task terminate];
-        }
+    dispatch_async(self.packageQueue, ^{
+        NSFileHandle *fileHandle = notification.object;
         
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSData *data = nil;//fileHandle.availableData;
+        while ((data = fileHandle.availableData) && data.length > 0) {
+            NSTask *task = self.tasks.firstObject;
+            if (self.isCanceled && task != nil) {
+                NSLog(@"cancel task, so terminate task[%@]", task);
+                [task terminate];
+            }
+            
             NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             NSLog(@"text = %@", text);
             
@@ -212,10 +212,8 @@ typedef void (^SelectDialogHandler)(NSString *path);
                 self.outputTextView.string = string;
                 [self.outputTextView scrollRangeToVisible:NSMakeRange(self.outputTextView.string.length, 1)];
             });
-        });
-    }
-    
-    [fileHandle waitForDataInBackgroundAndNotify];
+        }
+    });
 }
 
 // 此方法所在线程和[task launch]时所在线程是一样的
@@ -242,7 +240,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
         if (status == 0) {
             NSLog(@"Task[%@] finished.", @(index));
             if (self.tasks.count != 0) {
-                [[self.tasks.firstObject.standardOutput fileHandleForReading] closeFile];
+//                [[self.tasks.firstObject.standardOutput fileHandleForReading] closeFile];
                 [self.tasks removeObjectAtIndex:0];
             }
             
