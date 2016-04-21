@@ -13,6 +13,8 @@ typedef NS_ENUM(NSUInteger, ZyxSelectDialogType) {
     ZyxSelectDialogTypeDirectory,
 };
 
+const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
+
 typedef void (^SelectDialogHandler)(NSString *path);
 
 @interface ViewController ()
@@ -25,6 +27,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
 @property (nonatomic, copy) NSString *ipaPath;
 @property (nonatomic, copy) NSString *codeSign;  // iPhone Distribution: ZTE CORPORATION
 @property (nonatomic, copy) NSString *provisionProfilePath;
+@property (nonatomic, copy) NSString *version;
 @property (nonatomic, strong) NSArray<NSString *> *libraryPaths;
 @property (nonatomic, assign) BOOL isWorkspace;
 @property (nonatomic, assign) BOOL isCanceled;
@@ -37,15 +40,21 @@ typedef void (^SelectDialogHandler)(NSString *path);
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(output:) name:NSFileHandleReadCompletionNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidTerminated:) name:NSTaskDidTerminateNotification object:nil];
-    
     self.packageQueue = dispatch_queue_create("zyx.EasyPackageQueue", DISPATCH_QUEUE_SERIAL);
 }
 
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
 // 所以找到如下方法，打开 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication 脚本,
 // 找到 --resource-rules= , 删除这个参数，打包就没有错误了
+
+- (void)addObservers {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(output:) name:NSFileHandleReadCompletionNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidTerminated:) name:NSTaskDidTerminateNotification object:nil];
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)makePackageTasks {
     NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _buildPath];
@@ -55,13 +64,13 @@ typedef void (^SelectDialogHandler)(NSString *path);
     NSString *makeIPAPathCommand = [NSString stringWithFormat:@"mkdir -p %@", self.ipaPath];
     NSString *makeIPACommand = [self makeIPACommand];
     
-    NSArray *tasks = @[[self asyncTaskWithShellCommand:rmBuildCommand],
-                       [self asyncTaskWithShellCommand:cleanProjectCommand],
-                       [self asyncTaskWithShellCommand:buildCommand],
+    NSArray *tasks = @[[self taskWithShellCommand:rmBuildCommand],
+                       [self taskWithShellCommand:cleanProjectCommand],
+                       [self taskWithShellCommand:buildCommand],
                        [self copyStaticLibrariesTask],
-                       [self asyncTaskWithShellCommand:makeIPAPathCommand],
-                       [self asyncTaskWithShellCommand:makeIPACommand],
-                       [self asyncTaskWithShellCommand:rmBuildCommand],
+                       [self taskWithShellCommand:makeIPAPathCommand],
+                       [self taskWithShellCommand:makeIPACommand],
+                       [self taskWithShellCommand:rmBuildCommand],
                        ];
     self.tasks = [NSMutableArray arrayWithArray:tasks];
 }
@@ -105,7 +114,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
     if (commandString.length == 0) {
         [commandString appendString:@"echo \"no static libraries found.\""];
     }
-    return [self asyncTaskWithShellCommand:commandString];
+    return [self taskWithShellCommand:commandString];
 }
 
 #pragma mark - Uitl Methods
@@ -126,13 +135,32 @@ typedef void (^SelectDialogHandler)(NSString *path);
     return text;
 }
 
-- (NSTask *)asyncTaskWithShellCommand:(NSString *)shell {
+- (NSTask *)taskWithShellCommand:(NSString *)shell {
     NSTask *task = [[NSTask alloc] init];
     task.currentDirectoryPath = self.projectRootPath;
     task.launchPath = @"/bin/sh";
     task.arguments = @[@"-c", shell];
     task.standardOutput = [NSPipe pipe];
     return task;
+}
+
+- (NSString *)resultStringOfShellCommand:(NSString *)shell {
+    return [self executeTaskSync:[self taskWithShellCommand:shell]];
+}
+
+- (NSString *)projectVersion {
+    NSString *plistFilePath = [[self.projectRootPath stringByAppendingPathComponent:self.projectName] stringByAppendingPathComponent:@"Info.plist"];
+    NSString *command = [NSString stringWithFormat:@"%@ -c \"Print CFBundleVersion\" %@", kPlistBuddy, plistFilePath];
+    NSString *version = [self resultStringOfShellCommand:command];
+    version  = [version stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return version;
+}
+
+- (void)setProjectVersion:(NSString *)version {
+    NSString *plistFilePath = [[self.projectRootPath stringByAppendingPathComponent:self.projectName] stringByAppendingPathComponent:@"Info.plist"];
+    NSString *command = [NSString stringWithFormat:@"%@ -c \"Set:CFBundleVersion %@\" %@", kPlistBuddy, version, plistFilePath];
+    NSString *result = [self resultStringOfShellCommand:command];
+    NSLog(@"result = %@", result);
 }
 
 - (void)searchStaticLibraries {
@@ -169,6 +197,8 @@ typedef void (^SelectDialogHandler)(NSString *path);
         }
     }
     self.projectName = projectName;
+    self.version = [self projectVersion];
+    self.versionTextField.stringValue = self.version;
     self.isWorkspace = workspaceName.length > 0 && projectName.length > 0;
 }
 
@@ -188,6 +218,27 @@ typedef void (^SelectDialogHandler)(NSString *path);
     NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"result = %@", result);
     return result;
+}
+
+- (BOOL)isVersionStringValid:(NSString *)version {
+    NSArray<NSString *> *items = [version componentsSeparatedByString:@"."];
+    if (items.count > 4) {
+        return NO;
+    }
+    
+    NSString *regex = @"^[0-9]+$";
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    
+    for (NSString *item in items) {
+        if (![pred evaluateWithObject:item]) {
+            return NO;
+        }
+        if (item.intValue < 0) {
+            return NO;
+        }
+    }
+    
+    return YES;
 }
 
 #pragma mark - NSTask output notification
@@ -233,6 +284,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
     //        [self executeTaskSync:self.tasks.lastObject];
             self.isCanceled = NO;
             
+            [self removeObservers];
             [self showAlertWithMessage:@"取消打包成功"];
             return;
         }
@@ -250,6 +302,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
                 
                 NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@.ipa", self.ipaPath, self.projectName];
                 [self showAlertWithMessage:message];
+                [self removeObservers];
                 return;
             } else {
                 [self executeTaskAsync:self.tasks.firstObject];
@@ -273,11 +326,20 @@ typedef void (^SelectDialogHandler)(NSString *path);
         return;
     }
     
+    NSString *version = self.versionTextField.stringValue;
+    if (![self isVersionStringValid:version]) {
+        [self showAlertWithMessage:@"版本号设置不正确，请重新设置"];
+        return;
+    }
+    [self setProjectVersion:version];
+    
     button.enabled = NO;
     self.outputTextView.string = @"";
     self.codeSign = self.codeSignTextField.stringValue;
     
+    
     [self makePackageTasks];
+    [self addObservers];
     
     NSTask *task = self.tasks.firstObject;
     [self executeTaskAsync:task];
