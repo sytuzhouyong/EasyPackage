@@ -7,13 +7,13 @@
 //
 
 #import "ViewController.h"
+#import "ZyxPackageConfig.h"
+#import "ZyxTaskUtil.h"
 
 typedef NS_ENUM(NSUInteger, ZyxSelectDialogType) {
     ZyxSelectDialogTypeFile,
     ZyxSelectDialogTypeDirectory,
 };
-
-const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
 
 typedef void (^SelectDialogHandler)(NSString *path);
 
@@ -21,15 +21,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
 
 @property (nonatomic, strong) dispatch_queue_t packageQueue;
 @property (nonatomic, strong) NSMutableArray<NSTask *> *tasks;
-@property (nonatomic, copy) NSString *projectRootPath;
-@property (nonatomic, copy) NSString *projectName;
-@property (nonatomic, copy) NSString *buildPath;
-@property (nonatomic, copy) NSString *ipaPath;
-@property (nonatomic, copy) NSString *codeSign;  // iPhone Distribution: ZTE CORPORATION
-@property (nonatomic, copy) NSString *provisionProfilePath;
-@property (nonatomic, copy) NSString *version;
-@property (nonatomic, strong) NSArray<NSString *> *libraryPaths;
-@property (nonatomic, assign) BOOL isWorkspace;
+@property (nonatomic, strong) ZyxPackageConfig *config;
 @property (nonatomic, assign) BOOL isCanceled;
 
 @end
@@ -41,6 +33,8 @@ typedef void (^SelectDialogHandler)(NSString *path);
     // Do any additional setup after loading the view.
     
     self.packageQueue = dispatch_queue_create("zyx.EasyPackageQueue", DISPATCH_QUEUE_SERIAL);
+    self.packageButton.enabled = NO;
+    self.cancelButton.enabled = NO;
 }
 
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
@@ -48,74 +42,31 @@ typedef void (^SelectDialogHandler)(NSString *path);
 // 找到 --resource-rules= , 删除这个参数，打包就没有错误了
 
 - (void)addObservers {
+    NSLog(@"a ha, add observer");
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(output:) name:NSFileHandleReadCompletionNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidTerminated:) name:NSTaskDidTerminateNotification object:nil];
 }
 
 - (void)removeObservers {
+    NSLog(@"yes, remove observer");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)makePackageTasks {
-    NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _buildPath];
+    NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _config.buildPath];
     NSString *cleanProjectCommand = @"/usr/bin/xcodebuild clean -configuration Release";
-    
-    NSString *buildCommand = [self buildCommand];
-    NSString *makeIPAPathCommand = [NSString stringWithFormat:@"mkdir -p %@", self.ipaPath];
-    NSString *makeIPACommand = [self makeIPACommand];
-    
-    NSArray *tasks = @[[self taskWithShellCommand:rmBuildCommand],
-                       [self taskWithShellCommand:cleanProjectCommand],
-                       [self taskWithShellCommand:buildCommand],
-                       [self copyStaticLibrariesTask],
-                       [self taskWithShellCommand:makeIPAPathCommand],
-                       [self taskWithShellCommand:makeIPACommand],
-                       [self taskWithShellCommand:rmBuildCommand],
+    NSString *makeIPAPathCommand = [NSString stringWithFormat:@"mkdir -p %@", _config.ipaPath];
+    NSArray *tasks = @[[ZyxTaskUtil taskWithShell:rmBuildCommand],
+                       [ZyxTaskUtil taskWithShell:cleanProjectCommand path:_config.rootPath],
+                       [_config buildTask],
+                       [_config copyStaticLibrariesTask],
+                       [ZyxTaskUtil taskWithShell:makeIPAPathCommand],
+                       [_config makeIPATask],
+                       [ZyxTaskUtil taskWithShell:rmBuildCommand],
                        ];
     self.tasks = [NSMutableArray arrayWithArray:tasks];
 }
 
-#pragma mark - Make Complex Command
-
-// "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist
-- (NSString *)buildCommand {
-    NSMutableString *commonCommand = [NSMutableString stringWithFormat:@"-configuration Release -sdk iphoneos OBJROOT=%@ TARGET_BUILD_DIR=%@ ", _buildPath, _buildPath];
-        // @"CODE_SIGN_IDENTITY=iphoneos/ResourceRules.plist \\"
-    
-    if (_codeSign.length > 0 && _provisionProfilePath.length > 0) {
-        NSString *UUID = [self UUIDFromProvisionProfileAtPath:self.provisionProfilePath];
-        [commonCommand appendFormat:@"CODE_SIGN_IDENTITY=\"%@\" PROVISIONING_PROFILE=%@ ", _codeSign, UUID];
-    }
-    
-    NSString *differentParamString = nil;
-    if (self.isWorkspace) {
-        differentParamString = [NSString stringWithFormat:@"-workspace %@.xcworkspace -scheme %@", _projectName, _projectName];
-    } else {
-        differentParamString = [NSString stringWithFormat:@"-target %@", _projectName];
-    }
-    
-    NSString *command = [NSString stringWithFormat:@"/usr/bin/xcodebuild %@ %@", differentParamString, commonCommand];
-    return command;
-}
-
-- (NSString *)makeIPACommand {
-    NSMutableString *command = [NSMutableString stringWithFormat:@"/usr/bin/xcrun -sdk iphoneos PackageApplication -v %@/%@.app -o %@/%@.ipa", _buildPath, _projectName, _ipaPath, _projectName];
-    if (_codeSign.length > 0 && _provisionProfilePath.length > 0) {
-        [command appendFormat:@"--embed %@ --sign \"%@\"", _provisionProfilePath, _codeSign];
-    }
-    return command;
-}
-
-- (NSTask *)copyStaticLibrariesTask {
-    NSMutableString *commandString = [NSMutableString string];
-    for (NSString *path in self.libraryPaths) {
-        [commandString appendFormat:@"cp %@ %@; ", path, self.buildPath];
-    }
-    if (commandString.length == 0) {
-        [commandString appendString:@"echo \"no static libraries found.\""];
-    }
-    return [self taskWithShellCommand:commandString];
-}
 
 #pragma mark - Uitl Methods
 
@@ -133,112 +84,6 @@ typedef void (^SelectDialogHandler)(NSString *path);
     NSData *data = [[task.standardOutput fileHandleForReading] readDataToEndOfFile];
     NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     return text;
-}
-
-- (NSTask *)taskWithShellCommand:(NSString *)shell {
-    NSTask *task = [[NSTask alloc] init];
-    task.currentDirectoryPath = self.projectRootPath;
-    task.launchPath = @"/bin/sh";
-    task.arguments = @[@"-c", shell];
-    task.standardOutput = [NSPipe pipe];
-    return task;
-}
-
-- (NSString *)resultStringOfShellCommand:(NSString *)shell {
-    return [self executeTaskSync:[self taskWithShellCommand:shell]];
-}
-
-- (NSString *)projectVersion {
-    NSString *plistFilePath = [[self.projectRootPath stringByAppendingPathComponent:self.projectName] stringByAppendingPathComponent:@"Info.plist"];
-    NSString *command = [NSString stringWithFormat:@"%@ -c \"Print CFBundleVersion\" %@", kPlistBuddy, plistFilePath];
-    NSString *version = [self resultStringOfShellCommand:command];
-    version  = [version stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    return version;
-}
-
-- (void)setProjectVersion:(NSString *)version {
-    NSString *plistFilePath = [[self.projectRootPath stringByAppendingPathComponent:self.projectName] stringByAppendingPathComponent:@"Info.plist"];
-    NSString *command = [NSString stringWithFormat:@"%@ -c \"Set:CFBundleVersion %@\" %@", kPlistBuddy, version, plistFilePath];
-    NSString *result = [self resultStringOfShellCommand:command];
-    NSLog(@"result = %@", result);
-}
-
-- (void)searchStaticLibraries {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *url = [NSURL fileURLWithPath:self.projectRootPath];
-    NSDirectoryEnumerator<NSURL *> *urls = [fileManager enumeratorAtURL:url includingPropertiesForKeys:@[] options:NSDirectoryEnumerationSkipsPackageDescendants | NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
-    
-    NSMutableArray<NSString *> *libraryPaths = [NSMutableArray array];
-    for (NSURL *url in urls) {
-        NSString *path = url.path;
-        if ([path.pathExtension isEqualToString:@"a"]) {
-            NSLog(@"path = %@", path);
-            [libraryPaths addObject:path];
-        }
-    }
-    self.libraryPaths = libraryPaths;
-}
-
-- (void)getProjectInfo {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *url = [NSURL fileURLWithPath:self.projectRootPath];
-    NSDirectoryEnumerator<NSURL *> *urls = [fileManager enumeratorAtURL:url includingPropertiesForKeys:@[] options:NSDirectoryEnumerationSkipsSubdirectoryDescendants | NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
-    
-    NSString *workspaceName = @"", *projectName = @"";
-    for (NSURL *url in urls) {
-        NSString *name = url.path.lastPathComponent;
-        if ([name hasSuffix:@".xcworkspace"]) {
-            workspaceName = [name stringByDeletingPathExtension];
-            continue;
-        }
-        if ([name hasSuffix:@".xcodeproj"]) {
-            projectName = [name stringByDeletingPathExtension];
-            continue;
-        }
-    }
-    self.projectName = projectName;
-    self.version = [self projectVersion];
-    self.versionTextField.stringValue = self.version;
-    self.isWorkspace = workspaceName.length > 0 && projectName.length > 0;
-}
-
-- (NSString *)UUIDFromProvisionProfileAtPath:(NSString *)path {
-    NSString *command = [NSString stringWithFormat:@"/usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin <<< $(security cms -D -i %@)", path];
-    
-    NSTask *task = [[NSTask alloc] init];
-    task.currentDirectoryPath = @"~/";
-    task.launchPath = @"/bin/sh";
-    task.arguments = @[@"-c", command];
-    task.standardOutput = [NSPipe pipe];
-    [task launch];
-    
-    NSData *data = [[task.standardOutput fileHandleForReading] readDataToEndOfFile];
-    [task waitUntilExit];
-    
-    NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"result = %@", result);
-    return result;
-}
-
-- (BOOL)isVersionStringValid:(NSString *)version {
-    NSArray<NSString *> *items = [version componentsSeparatedByString:@"."];
-    if (items.count > 4) {
-        return NO;
-    }
-    
-    NSString *regex = @"^[0-9]+$";
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
-    
-    for (NSString *item in items) {
-        if (![pred evaluateWithObject:item]) {
-            return NO;
-        }
-        if (item.intValue < 0) {
-            return NO;
-        }
-    }
-    
-    return YES;
 }
 
 #pragma mark - NSTask output notification
@@ -292,7 +137,6 @@ typedef void (^SelectDialogHandler)(NSString *path);
         if (status == 0) {
             NSLog(@"Task[%@] finished.", @(index));
             if (self.tasks.count != 0) {
-//                [[self.tasks.firstObject.standardOutput fileHandleForReading] closeFile];
                 [self.tasks removeObjectAtIndex:0];
             }
             
@@ -300,7 +144,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
                 self.packageButton.enabled = YES;
                 index = 1;
                 
-                NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@.ipa", self.ipaPath, self.projectName];
+                NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@-%@.ipa", _config.ipaPath, _config.project.name, _config.project.version];
                 [self showAlertWithMessage:message];
                 [self removeObservers];
                 return;
@@ -321,22 +165,21 @@ typedef void (^SelectDialogHandler)(NSString *path);
 #pragma mark - Button Action
 
 - (IBAction)packageButtonPressed:(NSButton *)button {
-    if (self.buildPath.length == 0) {
-        [self showAlertWithMessage:@"请设置工程根目录"];
-        return;
-    }
-    
     NSString *version = self.versionTextField.stringValue;
-    if (![self isVersionStringValid:version]) {
-        [self showAlertWithMessage:@"版本号设置不正确，请重新设置"];
+    if (![ZyxIOSProjectInfo isVersionStringValid:version]) {
+        [self showAlertWithMessage:@"版本号填写不正确，请重新设置"];
         return;
     }
-    [self setProjectVersion:version];
+    if (![self.config.project setProjectVersion:version]) {
+        [self showAlertWithMessage:@"版本号设置失败"];
+        return;
+    }
     
     button.enabled = NO;
-    self.outputTextView.string = @"";
-    self.codeSign = self.codeSignTextField.stringValue;
+    self.cancelButton.enabled = YES;
     
+    self.outputTextView.string = @"";
+    self.config.codesign = self.codeSignTextField.stringValue;
     
     [self makePackageTasks];
     [self addObservers];
@@ -357,17 +200,17 @@ typedef void (^SelectDialogHandler)(NSString *path);
 // 项目根目录
 - (IBAction)selectProjectRootPath:(NSButton *)button {
     [self selectPathInTextField:self.projectRootDirTextField];
-    self.projectRootPath = self.projectRootDirTextField.stringValue;
+    NSString *rootPath = self.projectRootDirTextField.stringValue;
     
-    if (self.projectRootPath.length == 0) {
+    BOOL valid = [ZyxPackageConfig isRootPathValid:rootPath];
+    if (!valid) {
+        [self showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
         return;
     }
+    self.packageButton.enabled = valid;
     
-    self.buildPath = [self.projectRootPath stringByAppendingPathComponent:@"build"];
-    self.ipaPath = [self.projectRootPath stringByAppendingPathComponent:@"ipa"];
-    
-    [self getProjectInfo];
-    [self searchStaticLibraries];
+    self.config = [[ZyxPackageConfig alloc] initWithRootPath:rootPath];
+    self.versionTextField.stringValue = self.config.project.version;
 }
 
 // IPA Path
@@ -375,7 +218,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
     [self selectPathInTextField:self.ipaTextField];
     NSString *path = self.ipaTextField.stringValue;
     if (path.length != 0) {
-        self.ipaPath = path;
+        self.config.ipaPath = path;
     }
 }
 
@@ -384,7 +227,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
     [self selectFileInTextField:self.profileTextField];
     NSString *path = self.profileTextField.stringValue;
     if (path.length != 0) {
-        self.provisionProfilePath = path;
+        self.config.provisionProfilePath = path;
     }
 }
 

@@ -16,5 +16,6 @@
 + (NSTask *)taskWithShell:(NSString *)shell path:(NSString *)path;
 
 + (NSString *)resultOfExecuteShell:(NSString *)shell;
++ (NSString *)resultOfExecuteShell:(NSString *)shell atPath:(NSString *)path;
 
 @end

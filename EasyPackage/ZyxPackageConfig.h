@@ -21,4 +21,11 @@
 
 - (instancetype)initWithRootPath:(NSString *)rootPath;
 
++ (BOOL)isRootPathValid:(NSString *)rootPath;
+
+- (NSTask *)buildTask;
+- (NSTask *)makeIPATask;
+- (NSTask *)copyStaticLibrariesTask;
+
+
 @end

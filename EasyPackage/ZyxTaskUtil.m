@@ -24,12 +24,7 @@
 }
 
 + (NSTask *)taskWithShell:(NSString *)shell {
-    NSTask *task = [[NSTask alloc] init];
-    task.currentDirectoryPath = @"~/";
-    task.launchPath = @"/bin/sh";
-    task.arguments = @[@"-c", shell];
-    task.standardOutput = [NSPipe pipe];
-    return task;
+    return [self taskWithShell:shell path:@"~/"];
 }
 
 + (NSTask *)taskWithShell:(NSString *)shell path:(NSString *)path {
@@ -42,7 +37,11 @@
 }
 
 + (NSString *)resultOfExecuteShell:(NSString *)shell {
-    NSTask *task = [ZyxTaskUtil taskWithShell:shell];
+    return [self resultOfExecuteShell:shell atPath:@"~/"];
+}
+
++ (NSString *)resultOfExecuteShell:(NSString *)shell atPath:(NSString *)path {
+    NSTask *task = [ZyxTaskUtil taskWithShell:shell path:path];
     [task launch];
     [task waitUntilExit];
     NSData *data = [[task.standardOutput fileHandleForReading] readDataToEndOfFile];
