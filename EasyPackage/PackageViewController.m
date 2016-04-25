@@ -1,12 +1,12 @@
 //
-//  ViewController.m
-//  TestOSX
+//  PackageViewController.m
+//  EasyPackage
 //
 //  Created by zhouyong on 16/3/6.
 //  Copyright © 2016 zhouyong. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "PackageViewController.h"
 #import "ZyxPackageConfig.h"
 #import "ZyxTaskUtil.h"
 
@@ -17,7 +17,7 @@ typedef NS_ENUM(NSUInteger, ZyxSelectDialogType) {
 
 typedef void (^SelectDialogHandler)(NSString *path);
 
-@interface ViewController ()
+@interface PackageViewController ()
 
 @property (nonatomic, strong) dispatch_queue_t packageQueue;
 @property (nonatomic, strong) NSMutableArray<NSTask *> *tasks;
@@ -26,7 +26,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
 
 @end
 
-@implementation ViewController
+@implementation PackageViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -42,7 +42,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
 // 找到 --resource-rules= , 删除这个参数，打包就没有错误了
 
 - (void)addObservers {
-    NSLog(@"a ha, add observer");
+    NSLog(@"aha, add observer");
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(output:) name:NSFileHandleReadCompletionNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskDidTerminated:) name:NSTaskDidTerminateNotification object:nil];
 }
@@ -201,13 +201,11 @@ typedef void (^SelectDialogHandler)(NSString *path);
 - (IBAction)selectProjectRootPath:(NSButton *)button {
     [self selectPathInTextField:self.projectRootDirTextField];
     NSString *rootPath = self.projectRootDirTextField.stringValue;
-    
-    BOOL valid = [ZyxPackageConfig isRootPathValid:rootPath];
-    if (!valid) {
+    if (rootPath.length == 0 || ![ZyxPackageConfig isRootPathValid:rootPath]) {
         [self showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
         return;
     }
-    self.packageButton.enabled = valid;
+    self.packageButton.enabled = YES;
     
     self.config = [[ZyxPackageConfig alloc] initWithRootPath:rootPath];
     self.versionTextField.stringValue = self.config.project.version;
@@ -288,6 +286,9 @@ typedef void (^SelectDialogHandler)(NSString *path);
     [super setRepresentedObject:representedObject];
 
     // Update the view, if already loaded.
+}
+- (void)dealloc {
+    NSLog(@"DEALLLOC");
 }
 
 @end

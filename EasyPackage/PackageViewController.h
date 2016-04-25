@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  PackageViewController.h
 //  EasyPackage
 //
 //  Created by zhouyong on 16/3/6.
@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface ViewController : NSViewController
+@interface PackageViewController : NSViewController
 
 @property (nonatomic, strong) IBOutlet NSTextField *projectRootDirTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *versionTextField;

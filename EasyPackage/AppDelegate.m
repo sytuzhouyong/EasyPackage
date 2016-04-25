@@ -7,8 +7,11 @@
 //
 
 #import "AppDelegate.h"
+#import "PackageViewController.h"
 
 @interface AppDelegate ()
+
+@property (weak) IBOutlet NSWindow *window;
 
 @end
 
@@ -16,21 +19,26 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
+    
+    PackageViewController *vc = [[PackageViewController alloc] initWithNibName:nil bundle:[NSBundle mainBundle]];
+    // window参数不能为空
+    NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
+    windowController.contentViewController = vc;
+    self.window.windowController = windowController;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application
 }
 
+// 为了在程序界面关闭的情况下点击dock上的app图标，能够回到app主界面
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
     if (flag) {
         return YES;
     }
     [NSApp activateIgnoringOtherApps:NO];
-    
-    NSStoryboard *storyboard = [NSStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-    NSWindowController *main = [storyboard instantiateControllerWithIdentifier:@"WindowController"];
-    NSWindow *window = main.window;
+
+    NSWindow *window = sender.windows.firstObject;
     [window makeKeyAndOrderFront:self];
     return YES;
 }

@@ -7,36 +7,38 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		25076B0D1CC097D400DFCE3B /* ZyxIOSProjectInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 25076B0C1CC097D400DFCE3B /* ZyxIOSProjectInfo.m */; };
-		25076B101CC0C36E00DFCE3B /* ZyxTaskUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 25076B0F1CC0C36E00DFCE3B /* ZyxTaskUtil.m */; };
-		25076B131CC0CC6300DFCE3B /* ZyxPackageConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 25076B121CC0CC6300DFCE3B /* ZyxPackageConfig.m */; };
-		25C302CA1CBBC16500F323DE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C302C91CBBC16500F323DE /* AppDelegate.m */; };
-		25C302CD1CBBC16500F323DE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C302CC1CBBC16500F323DE /* main.m */; };
-		25C302D01CBBC16500F323DE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C302CF1CBBC16500F323DE /* ViewController.m */; };
-		25C302D21CBBC16500F323DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 25C302D11CBBC16500F323DE /* Assets.xcassets */; };
-		25C302D51CBBC16500F323DE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25C302D31CBBC16500F323DE /* Main.storyboard */; };
+		25B037331CCE5DF5004EFD40 /* PackageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25B037321CCE5DF5004EFD40 /* PackageViewController.xib */; };
+		25C27E5F1CCE587B00858788 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E5E1CCE587B00858788 /* AppDelegate.m */; };
+		25C27E621CCE587B00858788 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E611CCE587B00858788 /* main.m */; };
+		25C27E641CCE587B00858788 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 25C27E631CCE587B00858788 /* Assets.xcassets */; };
+		25C27E671CCE587B00858788 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C27E651CCE587B00858788 /* MainMenu.xib */; };
+		25C27E7A1CCE598300858788 /* PackageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E731CCE598300858788 /* PackageViewController.m */; };
+		25C27E7B1CCE598300858788 /* ZyxIOSProjectInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E751CCE598300858788 /* ZyxIOSProjectInfo.m */; };
+		25C27E7C1CCE598300858788 /* ZyxPackageConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E771CCE598300858788 /* ZyxPackageConfig.m */; };
+		25C27E7D1CCE598300858788 /* ZyxTaskUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E791CCE598300858788 /* ZyxTaskUtil.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		25076B0B1CC097D400DFCE3B /* ZyxIOSProjectInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxIOSProjectInfo.h; sourceTree = "<group>"; };
-		25076B0C1CC097D400DFCE3B /* ZyxIOSProjectInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxIOSProjectInfo.m; sourceTree = "<group>"; };
-		25076B0E1CC0C36E00DFCE3B /* ZyxTaskUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxTaskUtil.h; sourceTree = "<group>"; };
-		25076B0F1CC0C36E00DFCE3B /* ZyxTaskUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxTaskUtil.m; sourceTree = "<group>"; };
-		25076B111CC0CC6300DFCE3B /* ZyxPackageConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxPackageConfig.h; sourceTree = "<group>"; };
-		25076B121CC0CC6300DFCE3B /* ZyxPackageConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxPackageConfig.m; sourceTree = "<group>"; };
-		25C302C51CBBC16500F323DE /* EasyPackage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyPackage.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		25C302C81CBBC16500F323DE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		25C302C91CBBC16500F323DE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		25C302CC1CBBC16500F323DE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		25C302CE1CBBC16500F323DE /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		25C302CF1CBBC16500F323DE /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		25C302D11CBBC16500F323DE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		25C302D41CBBC16500F323DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		25C302D61CBBC16500F323DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		25B037321CCE5DF5004EFD40 /* PackageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PackageViewController.xib; sourceTree = "<group>"; };
+		25C27E5A1CCE587B00858788 /* EasyPackage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyPackage.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		25C27E5D1CCE587B00858788 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		25C27E5E1CCE587B00858788 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		25C27E611CCE587B00858788 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		25C27E631CCE587B00858788 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		25C27E661CCE587B00858788 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		25C27E681CCE587B00858788 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		25C27E721CCE598300858788 /* PackageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageViewController.h; sourceTree = "<group>"; };
+		25C27E731CCE598300858788 /* PackageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PackageViewController.m; sourceTree = "<group>"; };
+		25C27E741CCE598300858788 /* ZyxIOSProjectInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxIOSProjectInfo.h; sourceTree = "<group>"; };
+		25C27E751CCE598300858788 /* ZyxIOSProjectInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxIOSProjectInfo.m; sourceTree = "<group>"; };
+		25C27E761CCE598300858788 /* ZyxPackageConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxPackageConfig.h; sourceTree = "<group>"; };
+		25C27E771CCE598300858788 /* ZyxPackageConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxPackageConfig.m; sourceTree = "<group>"; };
+		25C27E781CCE598300858788 /* ZyxTaskUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxTaskUtil.h; sourceTree = "<group>"; };
+		25C27E791CCE598300858788 /* ZyxTaskUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxTaskUtil.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		25C302C21CBBC16500F323DE /* Frameworks */ = {
+		25C27E571CCE587B00858788 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,47 +48,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		25C302BC1CBBC16500F323DE = {
+		25C27E511CCE587B00858788 = {
 			isa = PBXGroup;
 			children = (
-				25C302C71CBBC16500F323DE /* EasyPackage */,
-				25C302C61CBBC16500F323DE /* Products */,
+				25C27E5C1CCE587B00858788 /* EasyPackage */,
+				25C27E5B1CCE587B00858788 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		25C302C61CBBC16500F323DE /* Products */ = {
+		25C27E5B1CCE587B00858788 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				25C302C51CBBC16500F323DE /* EasyPackage.app */,
+				25C27E5A1CCE587B00858788 /* EasyPackage.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		25C302C71CBBC16500F323DE /* EasyPackage */ = {
+		25C27E5C1CCE587B00858788 /* EasyPackage */ = {
 			isa = PBXGroup;
 			children = (
-				25C302C81CBBC16500F323DE /* AppDelegate.h */,
-				25C302C91CBBC16500F323DE /* AppDelegate.m */,
-				25C302CE1CBBC16500F323DE /* ViewController.h */,
-				25C302CF1CBBC16500F323DE /* ViewController.m */,
-				25C302D11CBBC16500F323DE /* Assets.xcassets */,
-				25C302D31CBBC16500F323DE /* Main.storyboard */,
-				25C302D61CBBC16500F323DE /* Info.plist */,
-				25C302CB1CBBC16500F323DE /* Supporting Files */,
-				25076B0B1CC097D400DFCE3B /* ZyxIOSProjectInfo.h */,
-				25076B0C1CC097D400DFCE3B /* ZyxIOSProjectInfo.m */,
-				25076B0E1CC0C36E00DFCE3B /* ZyxTaskUtil.h */,
-				25076B0F1CC0C36E00DFCE3B /* ZyxTaskUtil.m */,
-				25076B111CC0CC6300DFCE3B /* ZyxPackageConfig.h */,
-				25076B121CC0CC6300DFCE3B /* ZyxPackageConfig.m */,
+				25C27E5D1CCE587B00858788 /* AppDelegate.h */,
+				25C27E5E1CCE587B00858788 /* AppDelegate.m */,
+				25C27E631CCE587B00858788 /* Assets.xcassets */,
+				25C27E681CCE587B00858788 /* Info.plist */,
+				25C27E651CCE587B00858788 /* MainMenu.xib */,
+				25C27E721CCE598300858788 /* PackageViewController.h */,
+				25C27E731CCE598300858788 /* PackageViewController.m */,
+				25B037321CCE5DF5004EFD40 /* PackageViewController.xib */,
+				25C27E601CCE587B00858788 /* Supporting Files */,
+				25C27E741CCE598300858788 /* ZyxIOSProjectInfo.h */,
+				25C27E751CCE598300858788 /* ZyxIOSProjectInfo.m */,
+				25C27E761CCE598300858788 /* ZyxPackageConfig.h */,
+				25C27E771CCE598300858788 /* ZyxPackageConfig.m */,
+				25C27E781CCE598300858788 /* ZyxTaskUtil.h */,
+				25C27E791CCE598300858788 /* ZyxTaskUtil.m */,
 			);
 			path = EasyPackage;
 			sourceTree = "<group>";
 		};
-		25C302CB1CBBC16500F323DE /* Supporting Files */ = {
+		25C27E601CCE587B00858788 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				25C302CC1CBBC16500F323DE /* main.m */,
+				25C27E611CCE587B00858788 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -94,13 +97,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		25C302C41CBBC16500F323DE /* EasyPackage */ = {
+		25C27E591CCE587B00858788 /* EasyPackage */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 25C302D91CBBC16500F323DE /* Build configuration list for PBXNativeTarget "EasyPackage" */;
+			buildConfigurationList = 25C27E6B1CCE587B00858788 /* Build configuration list for PBXNativeTarget "EasyPackage" */;
 			buildPhases = (
-				25C302C11CBBC16500F323DE /* Sources */,
-				25C302C21CBBC16500F323DE /* Frameworks */,
-				25C302C31CBBC16500F323DE /* Resources */,
+				25C27E561CCE587B00858788 /* Sources */,
+				25C27E571CCE587B00858788 /* Frameworks */,
+				25C27E581CCE587B00858788 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -108,24 +111,24 @@
 			);
 			name = EasyPackage;
 			productName = EasyPackage;
-			productReference = 25C302C51CBBC16500F323DE /* EasyPackage.app */;
+			productReference = 25C27E5A1CCE587B00858788 /* EasyPackage.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		25C302BD1CBBC16500F323DE /* Project object */ = {
+		25C27E521CCE587B00858788 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = zhouyong;
 				TargetAttributes = {
-					25C302C41CBBC16500F323DE = {
+					25C27E591CCE587B00858788 = {
 						CreatedOnToolsVersion = 7.2.1;
 					};
 				};
 			};
-			buildConfigurationList = 25C302C01CBBC16500F323DE /* Build configuration list for PBXProject "EasyPackage" */;
+			buildConfigurationList = 25C27E551CCE587B00858788 /* Build configuration list for PBXProject "EasyPackage" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -133,57 +136,58 @@
 				en,
 				Base,
 			);
-			mainGroup = 25C302BC1CBBC16500F323DE;
-			productRefGroup = 25C302C61CBBC16500F323DE /* Products */;
+			mainGroup = 25C27E511CCE587B00858788;
+			productRefGroup = 25C27E5B1CCE587B00858788 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				25C302C41CBBC16500F323DE /* EasyPackage */,
+				25C27E591CCE587B00858788 /* EasyPackage */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		25C302C31CBBC16500F323DE /* Resources */ = {
+		25C27E581CCE587B00858788 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25C302D21CBBC16500F323DE /* Assets.xcassets in Resources */,
-				25C302D51CBBC16500F323DE /* Main.storyboard in Resources */,
+				25C27E641CCE587B00858788 /* Assets.xcassets in Resources */,
+				25B037331CCE5DF5004EFD40 /* PackageViewController.xib in Resources */,
+				25C27E671CCE587B00858788 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		25C302C11CBBC16500F323DE /* Sources */ = {
+		25C27E561CCE587B00858788 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25076B101CC0C36E00DFCE3B /* ZyxTaskUtil.m in Sources */,
-				25C302D01CBBC16500F323DE /* ViewController.m in Sources */,
-				25076B131CC0CC6300DFCE3B /* ZyxPackageConfig.m in Sources */,
-				25076B0D1CC097D400DFCE3B /* ZyxIOSProjectInfo.m in Sources */,
-				25C302CD1CBBC16500F323DE /* main.m in Sources */,
-				25C302CA1CBBC16500F323DE /* AppDelegate.m in Sources */,
+				25C27E7D1CCE598300858788 /* ZyxTaskUtil.m in Sources */,
+				25C27E7A1CCE598300858788 /* PackageViewController.m in Sources */,
+				25C27E621CCE587B00858788 /* main.m in Sources */,
+				25C27E5F1CCE587B00858788 /* AppDelegate.m in Sources */,
+				25C27E7C1CCE598300858788 /* ZyxPackageConfig.m in Sources */,
+				25C27E7B1CCE598300858788 /* ZyxIOSProjectInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		25C302D31CBBC16500F323DE /* Main.storyboard */ = {
+		25C27E651CCE587B00858788 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				25C302D41CBBC16500F323DE /* Base */,
+				25C27E661CCE587B00858788 /* Base */,
 			);
-			name = Main.storyboard;
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		25C302D71CBBC16500F323DE /* Debug */ = {
+		25C27E691CCE587B00858788 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -219,14 +223,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
-		25C302D81CBBC16500F323DE /* Release */ = {
+		25C27E6A1CCE587B00858788 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -256,13 +260,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
 			name = Release;
 		};
-		25C302DA1CBBC16500F323DE /* Debug */ = {
+		25C27E6C1CCE587B00858788 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -274,7 +278,7 @@
 			};
 			name = Debug;
 		};
-		25C302DB1CBBC16500F323DE /* Release */ = {
+		25C27E6D1CCE587B00858788 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -289,25 +293,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		25C302C01CBBC16500F323DE /* Build configuration list for PBXProject "EasyPackage" */ = {
+		25C27E551CCE587B00858788 /* Build configuration list for PBXProject "EasyPackage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				25C302D71CBBC16500F323DE /* Debug */,
-				25C302D81CBBC16500F323DE /* Release */,
+				25C27E691CCE587B00858788 /* Debug */,
+				25C27E6A1CCE587B00858788 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		25C302D91CBBC16500F323DE /* Build configuration list for PBXNativeTarget "EasyPackage" */ = {
+		25C27E6B1CCE587B00858788 /* Build configuration list for PBXNativeTarget "EasyPackage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				25C302DA1CBBC16500F323DE /* Debug */,
-				25C302DB1CBBC16500F323DE /* Release */,
+				25C27E6C1CCE587B00858788 /* Debug */,
+				25C27E6D1CCE587B00858788 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 25C302BD1CBBC16500F323DE /* Project object */;
+	rootObject = 25C27E521CCE587B00858788 /* Project object */;
 }
