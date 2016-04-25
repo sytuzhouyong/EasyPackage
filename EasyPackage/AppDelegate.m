@@ -22,4 +22,17 @@
     // Insert code here to tear down your application
 }
 
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+    if (flag) {
+        return YES;
+    }
+    [NSApp activateIgnoringOtherApps:NO];
+    
+    NSStoryboard *storyboard = [NSStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    NSWindowController *main = [storyboard instantiateControllerWithIdentifier:@"WindowController"];
+    NSWindow *window = main.window;
+    [window makeKeyAndOrderFront:self];
+    return YES;
+}
+
 @end
