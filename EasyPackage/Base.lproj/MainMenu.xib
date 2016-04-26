@@ -128,6 +128,16 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Config" id="tZW-E8-Vnz">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Config" id="ZHG-hh-UdG">
+                        <items>
+                            <menuItem title="配置管理..." id="Sd2-Lt-FNe">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Edit" id="5QF-Oa-p0T">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Edit" id="W48-6f-4Dl">
