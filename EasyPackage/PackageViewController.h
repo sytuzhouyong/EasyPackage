@@ -19,5 +19,7 @@
 @property (nonatomic, strong) IBOutlet NSButton *packageButton;
 @property (nonatomic, strong) IBOutlet NSButton *cancelButton;
 
+@property (nonatomic, strong) IBOutlet NSView *configView;
+
 @end
 
