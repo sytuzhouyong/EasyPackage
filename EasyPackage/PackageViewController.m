@@ -35,12 +35,16 @@ typedef void (^SelectDialogHandler)(NSString *path);
     self.packageQueue = dispatch_queue_create("zyx.EasyPackageQueue", DISPATCH_QUEUE_SERIAL);
     self.packageButton.enabled = NO;
     self.cancelButton.enabled = NO;
-    
-    NSMenuItem *configMenuItems = [NSApp mainMenu].itemArray[2];
-    NSMenuItem *manageConfigMenuItem = configMenuItems.submenu.itemArray.firstObject;
+ 
+    NSMenuItem *manageConfigMenuItem = [self configMenuItem];
     manageConfigMenuItem.target = self;
     manageConfigMenuItem.action = @selector(configManageButtonPressed);
-    
+}
+
+- (NSMenuItem *)configMenuItem {
+    NSMenuItem *configMenuItems = [NSApp mainMenu].itemArray[2];
+    NSMenuItem *manageConfigMenuItem = configMenuItems.submenu.itemArray.firstObject;
+    return manageConfigMenuItem;
 }
 
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
@@ -291,7 +295,14 @@ typedef void (^SelectDialogHandler)(NSString *path);
 #pragma mark - 配置管理
 
 - (void)configManageButtonPressed {
-    ;
+    self.configWindow.title = @"配置管理";
+    [self.configWindow center];
+    [[NSApplication sharedApplication] runModalForWindow:self.configWindow];
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    // 不加这一句，父window的所有空间都不能用
+    [NSApp stopModalWithCode:0];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
