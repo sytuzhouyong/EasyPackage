@@ -39,6 +39,9 @@ typedef void (^SelectDialogHandler)(NSString *path);
     NSMenuItem *manageConfigMenuItem = [self configMenuItem];
     manageConfigMenuItem.target = self;
     manageConfigMenuItem.action = @selector(configManageButtonPressed);
+    
+    
+    self.configWindowController = [[NSWindowController alloc] initWithWindowNibName:@"ConfigManageWindow"];
 }
 
 - (NSMenuItem *)configMenuItem {
@@ -295,13 +298,13 @@ typedef void (^SelectDialogHandler)(NSString *path);
 #pragma mark - 配置管理
 
 - (void)configManageButtonPressed {
-    self.configWindow.title = @"配置管理";
-    [self.configWindow center];
-    [[NSApplication sharedApplication] runModalForWindow:self.configWindow];
+//    [self.configWindowController.window center];
+    
+//    [[NSApplication sharedApplication] runModalForWindow:self.configWindowController.window];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    // 不加这一句，父window的所有空间都不能用
+    // 不加这一句，父window的所有控件都不能用
     [NSApp stopModalWithCode:0];
 }
 
