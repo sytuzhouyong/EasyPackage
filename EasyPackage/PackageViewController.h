@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "ManageConfigViewController.h"
 
 @interface PackageViewController : NSViewController
 
@@ -18,8 +19,6 @@
 @property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
 @property (nonatomic, strong) IBOutlet NSButton *packageButton;
 @property (nonatomic, strong) IBOutlet NSButton *cancelButton;
-
-@property (nonatomic, strong) NSWindowController *configWindowController;
 
 @end
 

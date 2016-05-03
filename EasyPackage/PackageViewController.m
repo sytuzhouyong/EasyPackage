@@ -17,12 +17,15 @@ typedef NS_ENUM(NSUInteger, ZyxSelectDialogType) {
 
 typedef void (^SelectDialogHandler)(NSString *path);
 
-@interface PackageViewController ()
+@interface PackageViewController () <NSWindowDelegate>
 
 @property (nonatomic, strong) dispatch_queue_t packageQueue;
 @property (nonatomic, strong) NSMutableArray<NSTask *> *tasks;
 @property (nonatomic, strong) ZyxPackageConfig *config;
 @property (nonatomic, assign) BOOL isCanceled;
+
+@property (nonatomic, strong) NSWindow *configWindow;
+
 
 @end
 
@@ -39,9 +42,6 @@ typedef void (^SelectDialogHandler)(NSString *path);
     NSMenuItem *manageConfigMenuItem = [self configMenuItem];
     manageConfigMenuItem.target = self;
     manageConfigMenuItem.action = @selector(configManageButtonPressed);
-    
-    
-    self.configWindowController = [[NSWindowController alloc] initWithWindowNibName:@"ConfigManageWindow"];
 }
 
 - (NSMenuItem *)configMenuItem {
@@ -298,14 +298,26 @@ typedef void (^SelectDialogHandler)(NSString *path);
 #pragma mark - 配置管理
 
 - (void)configManageButtonPressed {
-//    [self.configWindowController.window center];
+    ManageConfigViewController *configVC = [[ManageConfigViewController alloc] initWithNibName:nil bundle:nil];
+    NSRect frame = configVC.view.frame;
+    NSUInteger style =  NSTitledWindowMask | NSClosableWindowMask |NSMiniaturizableWindowMask | NSResizableWindowMask;
+    NSWindow *window = [[NSWindow alloc] initWithContentRect:frame styleMask:style backing:NSBackingStoreRetained defer:NO];
+    window.title = @"配置管理";
+    window.delegate = self;
+    [window.contentView addSubview:configVC.view];
+    [window makeKeyAndOrderFront:self];
+    [window center];
+    self.configWindow = window;
     
-//    [[NSApplication sharedApplication] runModalForWindow:self.configWindowController.window];
+    [[NSApplication sharedApplication] runModalForWindow:window];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    // 不加这一句，父window的所有控件都不能用
-    [NSApp stopModalWithCode:0];
+    [self performSelectorOnMainThread:@selector(closeModalWindow) withObject:nil waitUntilDone:NO];
+}
+
+-(void)closeModalWindow {
+    [[NSApplication sharedApplication] stopModal];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
