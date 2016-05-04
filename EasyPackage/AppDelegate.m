@@ -20,11 +20,12 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     
-    PackageViewController *vc = [[PackageViewController alloc] initWithNibName:nil bundle:[NSBundle mainBundle]];
+    PackageViewController *vc = [[PackageViewController alloc] initWithNibName:nil bundle:nil];
     // window参数不能为空
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
     windowController.contentViewController = vc;
     self.window.windowController = windowController;
+    [self.window center];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

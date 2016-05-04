@@ -9,6 +9,7 @@
 #import "PackageViewController.h"
 #import "ZyxPackageConfig.h"
 #import "ZyxTaskUtil.h"
+#import "AppDelegate.h"
 
 typedef NS_ENUM(NSUInteger, ZyxSelectDialogType) {
     ZyxSelectDialogTypeFile,
@@ -23,9 +24,6 @@ typedef void (^SelectDialogHandler)(NSString *path);
 @property (nonatomic, strong) NSMutableArray<NSTask *> *tasks;
 @property (nonatomic, strong) ZyxPackageConfig *config;
 @property (nonatomic, assign) BOOL isCanceled;
-
-@property (nonatomic, strong) NSWindow *configWindow;
-
 
 @end
 
@@ -303,20 +301,14 @@ typedef void (^SelectDialogHandler)(NSString *path);
     NSUInteger style =  NSTitledWindowMask | NSClosableWindowMask |NSMiniaturizableWindowMask | NSResizableWindowMask;
     NSWindow *window = [[NSWindow alloc] initWithContentRect:frame styleMask:style backing:NSBackingStoreRetained defer:NO];
     window.title = @"配置管理";
-    window.delegate = self;
     [window.contentView addSubview:configVC.view];
-    [window makeKeyAndOrderFront:self];
-    [window center];
-    self.configWindow = window;
+    window.delegate = self;
     
-    [[NSApplication sharedApplication] runModalForWindow:window];
+    NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:window];
+    [[NSApplication sharedApplication] runModalForWindow:windowController.window];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    [self performSelectorOnMainThread:@selector(closeModalWindow) withObject:nil waitUntilDone:NO];
-}
-
--(void)closeModalWindow {
     [[NSApplication sharedApplication] stopModal];
 }
 
