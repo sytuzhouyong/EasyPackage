@@ -13,10 +13,26 @@
 
 - (instancetype)initWithRootPath:(NSString *)rootPath {
     if (self = [super init]) {
-        self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:rootPath];
         self.rootPath = rootPath;
-        self.buildPath = [rootPath stringByAppendingPathComponent:@"build"];
-        self.ipaPath = [rootPath stringByAppendingPathComponent:@"ipa"];
+        
+        if (rootPath.length > 0) {
+            self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:rootPath];
+            self.buildPath = [rootPath stringByAppendingPathComponent:@"build"];
+            self.ipaPath = [rootPath stringByAppendingPathComponent:@"ipa"];
+        }
+    }
+    return self;
+}
+
+- (instancetype)initWithDict:(NSDictionary *)dict {
+    if (self = [super init]) {
+        self.rootPath = dict[@"rootPath"];
+        self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:self.rootPath];
+        self.name = dict[@"name"];
+        self.buildPath = dict[@"buildPath"];
+        self.ipaPath = dict[@"ipaPath"];
+        self.codesign = dict[@"codesign"];
+        self.provisionProfilePath = dict[@"provisionProfilePath"];
     }
     return self;
 }

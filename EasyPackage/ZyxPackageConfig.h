@@ -20,6 +20,7 @@
 @property (nonatomic, copy) NSString *provisionProfilePath;
 
 - (instancetype)initWithRootPath:(NSString *)rootPath;
+- (instancetype)initWithDict:(NSDictionary *)dict;
 
 + (BOOL)isRootPathValid:(NSString *)rootPath;
 

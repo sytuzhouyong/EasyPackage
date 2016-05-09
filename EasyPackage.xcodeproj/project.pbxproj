@@ -18,6 +18,7 @@
 		25C27E7B1CCE598300858788 /* ZyxIOSProjectInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E751CCE598300858788 /* ZyxIOSProjectInfo.m */; };
 		25C27E7C1CCE598300858788 /* ZyxPackageConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E771CCE598300858788 /* ZyxPackageConfig.m */; };
 		25C27E7D1CCE598300858788 /* ZyxTaskUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E791CCE598300858788 /* ZyxTaskUtil.m */; };
+		25CC3A6A1CDC30BC004BD790 /* configs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 25CC3A691CDC30BC004BD790 /* configs.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		25C27E771CCE598300858788 /* ZyxPackageConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxPackageConfig.m; sourceTree = "<group>"; };
 		25C27E781CCE598300858788 /* ZyxTaskUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxTaskUtil.h; sourceTree = "<group>"; };
 		25C27E791CCE598300858788 /* ZyxTaskUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxTaskUtil.m; sourceTree = "<group>"; };
+		25CC3A691CDC30BC004BD790 /* configs.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = configs.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				25C27E771CCE598300858788 /* ZyxPackageConfig.m */,
 				25C27E781CCE598300858788 /* ZyxTaskUtil.h */,
 				25C27E791CCE598300858788 /* ZyxTaskUtil.m */,
+				25CC3A691CDC30BC004BD790 /* configs.plist */,
 			);
 			path = EasyPackage;
 			sourceTree = "<group>";
@@ -160,6 +163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				25C27E641CCE587B00858788 /* Assets.xcassets in Resources */,
+				25CC3A6A1CDC30BC004BD790 /* configs.plist in Resources */,
 				25B037331CCE5DF5004EFD40 /* PackageViewController.xib in Resources */,
 				257A0C901CD8F113003DA004 /* ManageConfigViewController.xib in Resources */,
 				25C27E671CCE587B00858788 /* MainMenu.xib in Resources */,
