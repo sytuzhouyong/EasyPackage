@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		257A0C8F1CD8F113003DA004 /* ManageConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 257A0C8D1CD8F113003DA004 /* ManageConfigViewController.m */; };
-		257A0C901CD8F113003DA004 /* ManageConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 257A0C8E1CD8F113003DA004 /* ManageConfigViewController.xib */; };
+		259D328A1CE1BC0B007ADFE0 /* ManageConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 259D32881CE1BC0B007ADFE0 /* ManageConfigViewController.m */; };
+		259D328B1CE1BC0B007ADFE0 /* ManageConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259D32891CE1BC0B007ADFE0 /* ManageConfigViewController.xib */; };
 		25B037331CCE5DF5004EFD40 /* PackageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25B037321CCE5DF5004EFD40 /* PackageViewController.xib */; };
 		25C27E5F1CCE587B00858788 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E5E1CCE587B00858788 /* AppDelegate.m */; };
 		25C27E621CCE587B00858788 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C27E611CCE587B00858788 /* main.m */; };
@@ -22,9 +22,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		257A0C8C1CD8F113003DA004 /* ManageConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ManageConfigViewController.h; path = ../ManageConfigViewController.h; sourceTree = "<group>"; };
-		257A0C8D1CD8F113003DA004 /* ManageConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ManageConfigViewController.m; path = ../ManageConfigViewController.m; sourceTree = "<group>"; };
-		257A0C8E1CD8F113003DA004 /* ManageConfigViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ManageConfigViewController.xib; path = ../ManageConfigViewController.xib; sourceTree = "<group>"; };
+		259D32871CE1BC0B007ADFE0 /* ManageConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageConfigViewController.h; sourceTree = "<group>"; };
+		259D32881CE1BC0B007ADFE0 /* ManageConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageConfigViewController.m; sourceTree = "<group>"; };
+		259D32891CE1BC0B007ADFE0 /* ManageConfigViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ManageConfigViewController.xib; sourceTree = "<group>"; };
 		25B037321CCE5DF5004EFD40 /* PackageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PackageViewController.xib; sourceTree = "<group>"; };
 		25C27E5A1CCE587B00858788 /* EasyPackage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyPackage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25C27E5D1CCE587B00858788 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -77,14 +77,15 @@
 				25C27E5D1CCE587B00858788 /* AppDelegate.h */,
 				25C27E5E1CCE587B00858788 /* AppDelegate.m */,
 				25C27E631CCE587B00858788 /* Assets.xcassets */,
+				25CC3A691CDC30BC004BD790 /* configs.plist */,
 				25C27E681CCE587B00858788 /* Info.plist */,
 				25C27E651CCE587B00858788 /* MainMenu.xib */,
+				259D32871CE1BC0B007ADFE0 /* ManageConfigViewController.h */,
+				259D32881CE1BC0B007ADFE0 /* ManageConfigViewController.m */,
+				259D32891CE1BC0B007ADFE0 /* ManageConfigViewController.xib */,
 				25C27E721CCE598300858788 /* PackageViewController.h */,
 				25C27E731CCE598300858788 /* PackageViewController.m */,
 				25B037321CCE5DF5004EFD40 /* PackageViewController.xib */,
-				257A0C8C1CD8F113003DA004 /* ManageConfigViewController.h */,
-				257A0C8D1CD8F113003DA004 /* ManageConfigViewController.m */,
-				257A0C8E1CD8F113003DA004 /* ManageConfigViewController.xib */,
 				25C27E601CCE587B00858788 /* Supporting Files */,
 				25C27E741CCE598300858788 /* ZyxIOSProjectInfo.h */,
 				25C27E751CCE598300858788 /* ZyxIOSProjectInfo.m */,
@@ -92,7 +93,6 @@
 				25C27E771CCE598300858788 /* ZyxPackageConfig.m */,
 				25C27E781CCE598300858788 /* ZyxTaskUtil.h */,
 				25C27E791CCE598300858788 /* ZyxTaskUtil.m */,
-				25CC3A691CDC30BC004BD790 /* configs.plist */,
 			);
 			path = EasyPackage;
 			sourceTree = "<group>";
@@ -165,7 +165,7 @@
 				25C27E641CCE587B00858788 /* Assets.xcassets in Resources */,
 				25CC3A6A1CDC30BC004BD790 /* configs.plist in Resources */,
 				25B037331CCE5DF5004EFD40 /* PackageViewController.xib in Resources */,
-				257A0C901CD8F113003DA004 /* ManageConfigViewController.xib in Resources */,
+				259D328B1CE1BC0B007ADFE0 /* ManageConfigViewController.xib in Resources */,
 				25C27E671CCE587B00858788 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -178,7 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				25C27E7D1CCE598300858788 /* ZyxTaskUtil.m in Sources */,
-				257A0C8F1CD8F113003DA004 /* ManageConfigViewController.m in Sources */,
+				259D328A1CE1BC0B007ADFE0 /* ManageConfigViewController.m in Sources */,
 				25C27E7A1CCE598300858788 /* PackageViewController.m in Sources */,
 				25C27E621CCE587B00858788 /* main.m in Sources */,
 				25C27E5F1CCE587B00858788 /* AppDelegate.m in Sources */,
@@ -287,6 +287,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = EasyPackage/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sytuzhouyong.EasyPackage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -299,6 +300,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = EasyPackage/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sytuzhouyong.EasyPackage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

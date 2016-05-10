@@ -100,9 +100,9 @@ typedef void (^SelectDialogHandler)(NSString *path);
 #pragma mark - NSTask output notification
 
 - (void)output:(NSNotification *)notification {
+    NSFileHandle *fileHandle = notification.object;
+    
     dispatch_async(self.packageQueue, ^{
-        NSFileHandle *fileHandle = notification.object;
-        
         NSData *data = nil;//fileHandle.availableData;
         while ((data = fileHandle.availableData) && data.length > 0) {
             NSTask *task = self.tasks.firstObject;
@@ -129,12 +129,12 @@ typedef void (^SelectDialogHandler)(NSString *path);
     static int index = 1;
     NSTask *task = notification.object;
     int status = [task terminationStatus];
-    NSLog(@"task[%@] terminate reason: %@", @(index), @(task.terminationReason));
+    NSLog(@"task[%@] success: %@", @(index), @(task.terminationReason));
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.isCanceled) {
             NSLog(@"cancel next task[%@], so return", @(index));
-            self.cancelButton.enabled = YES;
+            self.cancelButton.enabled = NO;
             self.packageButton.enabled = YES;
             // 不知道为什么加了这句，取消打包就崩溃
     //        [self executeTaskSync:self.tasks.lastObject];
@@ -145,30 +145,33 @@ typedef void (^SelectDialogHandler)(NSString *path);
             return;
         }
         
-        if (status == 0) {
-            NSLog(@"Task[%@] finished.", @(index));
-            if (self.tasks.count != 0) {
-                [self.tasks removeObjectAtIndex:0];
-            }
-            
-            if (self.tasks.count == 0) {
-                self.packageButton.enabled = YES;
-                index = 1;
-                
-                NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@-%@.ipa", _config.ipaPath, _config.project.name, _config.project.version];
-                [self showAlertWithMessage:message];
-                [self removeObservers];
-                return;
-            } else {
-                [self executeTaskAsync:self.tasks.firstObject];
-                index++;
-            }
-        } else {
+        if (status != 0) {
             NSLog(@"Task[%@] failed.", @(index));
-            self.packageButton.enabled = YES;
+            self.packageButton.enabled = NO;
             self.cancelButton.enabled = YES;
             [self executeTaskSync:self.tasks.lastObject];
+            [self.tasks removeAllObjects];
             [self showAlertWithMessage:@"打包失败"];
+        }
+        
+        NSLog(@"Task[%@] finished.", @(index));
+        // 移除掉完成的任务
+        if (self.tasks.count != 0) {
+            [self.tasks removeObjectAtIndex:0];
+        }
+        
+        if (self.tasks.count == 0) {
+            self.cancelButton.enabled = NO;
+            self.packageButton.enabled = YES;
+            index = 1;
+            
+            NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@-%@.ipa", _config.ipaPath, _config.project.name, _config.project.version];
+            [self showAlertWithMessage:message];
+            [self removeObservers];
+            return;
+        } else {
+            [self executeTaskAsync:self.tasks.firstObject];
+            index++;
         }
     });
 }
@@ -185,6 +188,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
         [self showAlertWithMessage:@"版本号设置失败"];
         return;
     }
+    self.config.project.version = version;
     
     button.enabled = NO;
     self.cancelButton.enabled = YES;

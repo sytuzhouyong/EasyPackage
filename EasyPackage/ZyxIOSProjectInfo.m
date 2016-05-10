@@ -81,8 +81,11 @@ const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
 - (NSArray<NSString *> *)getStaticLibrariesPaths {
     NSString *shell = [NSString stringWithFormat:@"find %@ -name *.a", self.rootPath];
     NSString *pathsString = [ZyxTaskUtil resultOfExecuteShell:shell];
+    
+    NSCharacterSet *ignoreSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    pathsString = [pathsString stringByTrimmingCharactersInSet:ignoreSet];
     if (pathsString.length > 0)
-        return [pathsString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        return [pathsString componentsSeparatedByCharactersInSet:ignoreSet];
     else
         return @[];
 }

@@ -48,9 +48,12 @@
     NSMutableString *commonCommand = [NSMutableString stringWithFormat:@"-configuration Release -sdk iphoneos OBJROOT=%@ TARGET_BUILD_DIR=%@ ", _buildPath, _buildPath];
     // @"CODE_SIGN_IDENTITY=iphoneos/ResourceRules.plist \\"
     
-    if (_codesign.length > 0 && _provisionProfilePath.length > 0) {
+    if (_codesign.length > 0) {
+        [commonCommand appendFormat:@"CODE_SIGN_IDENTITY=\"%@\" ", _codesign];
+    }
+    if (_provisionProfilePath.length > 0) {
         NSString *UUID = [self uuidFromProvisionProfileAtPath:self.provisionProfilePath];
-        [commonCommand appendFormat:@"CODE_SIGN_IDENTITY=\"%@\" PROVISIONING_PROFILE=%@ ", _codesign, UUID];
+        [commonCommand appendFormat:@"PROVISIONING_PROFILE=%@ ", UUID];
     }
     
     NSString *differentParamString = nil;
