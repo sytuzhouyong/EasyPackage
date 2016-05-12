@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		251F2EDE1CE313D600FE27C0 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 251F2EDD1CE313D600FE27C0 /* Util.m */; };
 		259D328A1CE1BC0B007ADFE0 /* ManageConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 259D32881CE1BC0B007ADFE0 /* ManageConfigViewController.m */; };
 		259D328B1CE1BC0B007ADFE0 /* ManageConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259D32891CE1BC0B007ADFE0 /* ManageConfigViewController.xib */; };
 		25B037331CCE5DF5004EFD40 /* PackageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25B037321CCE5DF5004EFD40 /* PackageViewController.xib */; };
@@ -22,6 +23,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		251F2EDC1CE313D600FE27C0 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
+		251F2EDD1CE313D600FE27C0 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
 		259D32871CE1BC0B007ADFE0 /* ManageConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageConfigViewController.h; sourceTree = "<group>"; };
 		259D32881CE1BC0B007ADFE0 /* ManageConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageConfigViewController.m; sourceTree = "<group>"; };
 		259D32891CE1BC0B007ADFE0 /* ManageConfigViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ManageConfigViewController.xib; sourceTree = "<group>"; };
@@ -87,6 +90,8 @@
 				25C27E731CCE598300858788 /* PackageViewController.m */,
 				25B037321CCE5DF5004EFD40 /* PackageViewController.xib */,
 				25C27E601CCE587B00858788 /* Supporting Files */,
+				251F2EDC1CE313D600FE27C0 /* Util.h */,
+				251F2EDD1CE313D600FE27C0 /* Util.m */,
 				25C27E741CCE598300858788 /* ZyxIOSProjectInfo.h */,
 				25C27E751CCE598300858788 /* ZyxIOSProjectInfo.m */,
 				25C27E761CCE598300858788 /* ZyxPackageConfig.h */,
@@ -184,6 +189,7 @@
 				25C27E5F1CCE587B00858788 /* AppDelegate.m in Sources */,
 				25C27E7C1CCE598300858788 /* ZyxPackageConfig.m in Sources */,
 				25C27E7B1CCE598300858788 /* ZyxIOSProjectInfo.m in Sources */,
+				251F2EDE1CE313D600FE27C0 /* Util.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

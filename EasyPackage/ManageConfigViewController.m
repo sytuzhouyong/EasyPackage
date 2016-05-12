@@ -8,13 +8,12 @@
 
 #import "ManageConfigViewController.h"
 #import "ZyxPackageConfig.h"
+#import "Util.h"
 
 @interface ManageConfigViewController () <NSTabViewDelegate, NSTableViewDataSource>
 
-@property (nonatomic, strong) IBOutlet NSTableView *tableView;
-@property (nonatomic, strong) IBOutlet NSTextField *nameTextField;
-
 @property (nonatomic, strong) NSMutableArray<ZyxPackageConfig *> *configs;
+@property (nonatomic, assign) NSInteger selectedIndex;
 
 @end
 
@@ -46,6 +45,7 @@
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     ZyxPackageConfig *config = self.configs[row];
     config.name = object;
+    self.selectedIndex = row;
 }
 
 // 双击cell，判断是否可编辑
@@ -85,5 +85,36 @@
     [self.tableView selectRowIndexes:indexSet byExtendingSelection:YES];
     [self.tableView endUpdates];
 }
+
+- (IBAction)saveConfigButtonPressed:(id)sender {
+    NSString *name = self.nameTextField.stringValue;
+    if (name.length == 0) {
+        [Util showAlertWithMessage:@"名称不能为空"];
+        return;
+    }
+    
+    NSString *rootPath = self.rootPathTextField.stringValue;
+    if (![Util isRootPathValid:rootPath]) {
+        [Util showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
+        return;
+    }
+    
+    NSString *version = self.versionTextField.stringValue;
+    if (![Util isVersionStringValid:version]) {
+        [Util showAlertWithMessage:@"版本号填写不正确，请重新设置"];
+        return;
+    }
+    
+    ZyxPackageConfig *config = [[ZyxPackageConfig alloc] initWithRootPath:rootPath];
+    config.name = name;
+    config.rootPath = rootPath;
+    config.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:rootPath];
+    config.project.version = version;
+    self.configs[self.selectedIndex] = config;
+    
+    NSDictionary *dict = @{@"configs": self.configs};
+    
+}
+
 
 @end;

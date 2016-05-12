@@ -12,8 +12,11 @@
 @interface ZyxPackageConfig : NSObject
 
 @property (nonatomic, strong) ZyxIOSProjectInfo *project;
-@property (nonatomic, copy) NSString *rootPath;
 @property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *rootPath;
+@property (nonatomic, copy) NSString *configuration;
+@property (nonatomic, copy) NSString *target;
+@property (nonatomic, copy) NSString *scheme;
 @property (nonatomic, copy) NSString *buildPath;
 @property (nonatomic, copy) NSString *ipaPath;
 @property (nonatomic, copy) NSString *codesign;
@@ -22,11 +25,10 @@
 - (instancetype)initWithRootPath:(NSString *)rootPath;
 - (instancetype)initWithDict:(NSDictionary *)dict;
 
-+ (BOOL)isRootPathValid:(NSString *)rootPath;
-
 - (NSTask *)buildTask;
 - (NSTask *)makeIPATask;
 - (NSTask *)copyStaticLibrariesTask;
 
+- (NSDictionary *)jsonValues;
 
 @end

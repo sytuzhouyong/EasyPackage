@@ -10,4 +10,14 @@
 
 @interface ManageConfigViewController : NSViewController
 
+@property (nonatomic, strong) IBOutlet NSTableView *tableView;
+@property (nonatomic, strong) IBOutlet NSTextField *nameTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *rootPathTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *versionTextField;
+@property (nonatomic, strong) IBOutlet NSComboBox *targetsBox;
+@property (nonatomic, strong) IBOutlet NSComboBox *schemesBox;
+@property (nonatomic, strong) IBOutlet NSTextField *ipaPathTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *provisionProfilePathTextField;
+
+
 @end

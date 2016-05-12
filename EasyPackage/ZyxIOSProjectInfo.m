@@ -90,25 +90,4 @@ const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
         return @[];
 }
 
-+ (BOOL)isVersionStringValid:(NSString *)version {
-    NSArray<NSString *> *items = [version componentsSeparatedByString:@"."];
-    if (items.count > 4) {
-        return NO;
-    }
-    
-    NSString *regex = @"^[0-9]+$";
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
-    
-    for (NSString *item in items) {
-        if (![pred evaluateWithObject:item]) {
-            return NO;
-        }
-        if (item.intValue < 0) {
-            return NO;
-        }
-    }
-    
-    return YES;
-}
-
 @end

@@ -8,6 +8,7 @@
 
 #import "ZyxPackageConfig.h"
 #import "ZyxTaskUtil.h"
+#import "Util.h"
 
 @implementation ZyxPackageConfig
 
@@ -26,21 +27,18 @@
 
 - (instancetype)initWithDict:(NSDictionary *)dict {
     if (self = [super init]) {
+        self.name = dict[@"name"];
         self.rootPath = dict[@"rootPath"];
         self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:self.rootPath];
-        self.name = dict[@"name"];
+        self.configuration = dict[@"configuration"];
+        self.target = dict[@"target"];
+        self.scheme = dict[@"scheme"];
         self.buildPath = dict[@"buildPath"];
         self.ipaPath = dict[@"ipaPath"];
         self.codesign = dict[@"codesign"];
         self.provisionProfilePath = dict[@"provisionProfilePath"];
     }
     return self;
-}
-
-+ (BOOL)isRootPathValid:(NSString *)rootPath {
-    NSString *shell = [NSString stringWithFormat:@"find %@ -name *.xcodeproj", rootPath];
-    NSString *pathsString = [ZyxTaskUtil resultOfExecuteShell:shell];
-    return pathsString.length > 0;
 }
 
 // "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist
@@ -92,6 +90,18 @@
     NSString *shell = [NSString stringWithFormat:@"/usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin <<< $(security cms -D -i %@)", path];
     NSString *result = [ZyxTaskUtil resultOfExecuteShell:shell];
     return result;
+}
+
+- (NSDictionary *)jsonValues {
+    return @{@"name":       SafeString(self.name),
+             @"rootPath":   SafeString(self.rootPath),
+             @"configuration": SafeString(self.configuration),
+             @"target":     SafeString(self.target),
+             @"scheme":     SafeString(self.scheme),
+             @"ipaPath":    SafeString(self.ipaPath),
+             @"codesign":   SafeString(self.codesign),
+             @"provisionProfilePath": SafeString(self.provisionProfilePath),
+             };
 }
 
 

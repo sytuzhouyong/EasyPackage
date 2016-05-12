@@ -9,14 +9,9 @@
 #import "PackageViewController.h"
 #import "ZyxPackageConfig.h"
 #import "ZyxTaskUtil.h"
+#import "Util.h"
 #import "AppDelegate.h"
 
-typedef NS_ENUM(NSUInteger, ZyxSelectDialogType) {
-    ZyxSelectDialogTypeFile,
-    ZyxSelectDialogTypeDirectory,
-};
-
-typedef void (^SelectDialogHandler)(NSString *path);
 
 @interface PackageViewController () <NSWindowDelegate>
 
@@ -141,7 +136,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
             self.isCanceled = NO;
             
             [self removeObservers];
-            [self showAlertWithMessage:@"取消打包成功"];
+            [Util showAlertWithMessage:@"取消打包成功"];
             return;
         }
         
@@ -151,7 +146,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
             self.cancelButton.enabled = YES;
             [self executeTaskSync:self.tasks.lastObject];
             [self.tasks removeAllObjects];
-            [self showAlertWithMessage:@"打包失败"];
+            [Util showAlertWithMessage:@"打包失败"];
         }
         
         NSLog(@"Task[%@] finished.", @(index));
@@ -166,7 +161,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
             index = 1;
             
             NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@-%@.ipa", _config.ipaPath, _config.project.name, _config.project.version];
-            [self showAlertWithMessage:message];
+            [Util showAlertWithMessage:message];
             [self removeObservers];
             return;
         } else {
@@ -180,12 +175,12 @@ typedef void (^SelectDialogHandler)(NSString *path);
 
 - (IBAction)packageButtonPressed:(NSButton *)button {
     NSString *version = self.versionTextField.stringValue;
-    if (![ZyxIOSProjectInfo isVersionStringValid:version]) {
-        [self showAlertWithMessage:@"版本号填写不正确，请重新设置"];
+    if (![Util isVersionStringValid:version]) {
+        [Util showAlertWithMessage:@"版本号填写不正确，请重新设置"];
         return;
     }
     if (![self.config.project setProjectVersion:version]) {
-        [self showAlertWithMessage:@"版本号设置失败"];
+        [Util showAlertWithMessage:@"版本号设置失败"];
         return;
     }
     self.config.project.version = version;
@@ -216,8 +211,8 @@ typedef void (^SelectDialogHandler)(NSString *path);
 - (IBAction)selectProjectRootPath:(NSButton *)button {
     [self selectPathInTextField:self.projectRootDirTextField];
     NSString *rootPath = self.projectRootDirTextField.stringValue;
-    if (rootPath.length == 0 || ![ZyxPackageConfig isRootPathValid:rootPath]) {
-        [self showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
+    if (![Util isRootPathValid:rootPath]) {
+        [Util showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
         return;
     }
     self.packageButton.enabled = YES;
@@ -247,7 +242,7 @@ typedef void (^SelectDialogHandler)(NSString *path);
 #pragma mark -
 
 - (void)selectPathInTextField:(NSTextField *)textField {
-    [self openSelectDialogWithType:ZyxSelectDialogTypeDirectory handler:^(NSString *path) {
+    [Util openSelectDialogWithType:ZyxSelectDialogTypeDirectory handler:^(NSString *path) {
         if (path != nil) {
             textField.stringValue = path;
         }
@@ -255,46 +250,11 @@ typedef void (^SelectDialogHandler)(NSString *path);
 }
 
 - (void)selectFileInTextField:(NSTextField *)textField {
-    [self openSelectDialogWithType:ZyxSelectDialogTypeFile handler:^(NSString *path) {
+    [Util openSelectDialogWithType:ZyxSelectDialogTypeFile handler:^(NSString *path) {
         if (path != nil) {
             textField.stringValue = path;
         }
     }];
-}
-
-- (void)showAlertWithMessage:(NSString *)message {
-    NSAlert *alert = [[NSAlert alloc] init];
-    alert.messageText = @"提示";
-    alert.informativeText = message;
-    [alert addButtonWithTitle:@"确定"];
-    [alert runModal];
-}
-
-- (void)openSelectDialogWithType:(ZyxSelectDialogType)type handler:(SelectDialogHandler)handler {
-    NSOpenPanel* dialog = [NSOpenPanel openPanel];
-    dialog.allowsMultipleSelection = NO;
-    
-    switch (type) {
-        case ZyxSelectDialogTypeFile:
-            dialog.canChooseFiles = YES;
-            dialog.canChooseDirectories = NO;
-            break;
-        case ZyxSelectDialogTypeDirectory:
-            dialog.canChooseFiles = NO;
-            dialog.canChooseDirectories = YES;
-            dialog.canCreateDirectories = YES;
-            break;
-        default:
-            break;
-    }
-    
-    if ([dialog runModal] == NSModalResponseOK) {
-        NSURL *url = dialog.URLs.firstObject;
-        NSString *path = url.path;
-        if (handler != nil) {
-            handler(path);
-        }
-    }
 }
 
 #pragma mark - 配置管理

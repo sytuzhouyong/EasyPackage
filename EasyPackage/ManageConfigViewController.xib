@@ -7,8 +7,14 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ManageConfigViewController">
             <connections>
+                <outlet property="ipaPathTextField" destination="um5-n9-5TF" id="JXq-9X-85k"/>
                 <outlet property="nameTextField" destination="acq-CY-tn1" id="GAr-K4-A7T"/>
+                <outlet property="provisionProfilePathTextField" destination="rPS-or-pao" id="qLx-3S-djg"/>
+                <outlet property="rootPathTextField" destination="ih1-aA-sLo" id="voN-aA-DKp"/>
+                <outlet property="schemesBox" destination="6dW-Ek-agN" id="r0n-wc-xhk"/>
                 <outlet property="tableView" destination="3Hx-bG-XRw" id="AKf-if-Mac"/>
+                <outlet property="targetsBox" destination="0yL-VG-sGr" id="8ah-wv-cnI"/>
+                <outlet property="versionTextField" destination="ng2-dt-g8q" id="8oQ-jA-ONp"/>
                 <outlet property="view" destination="NzR-dl-Otw" id="Gfh-s5-J2y"/>
             </connections>
         </customObject>
@@ -181,17 +187,6 @@
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
-                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JSC-i3-GXk">
-                            <rect key="frame" x="312" y="245" width="40" height="32"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="21" id="fBL-7f-7G7"/>
-                                <constraint firstAttribute="width" constant="28" id="fUB-pq-gdX"/>
-                            </constraints>
-                            <buttonCell key="cell" type="push" title="..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="CAm-lI-2bc">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                        </button>
                         <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0yL-VG-sGr">
                             <rect key="frame" x="100" y="157" width="209" height="26"/>
                             <constraints>
@@ -268,6 +263,17 @@
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
+                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JSC-i3-GXk">
+                            <rect key="frame" x="312" y="232" width="40" height="32"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="21" id="fBL-7f-7G7"/>
+                                <constraint firstAttribute="width" constant="28" id="fUB-pq-gdX"/>
+                            </constraints>
+                            <buttonCell key="cell" type="push" title="..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="CAm-lI-2bc">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </button>
                     </subviews>
                     <constraints>
                         <constraint firstItem="L2x-wm-hbt" firstAttribute="top" secondItem="zV7-eN-zgq" secondAttribute="bottom" constant="8" id="1Ij-9O-9i9"/>
@@ -288,6 +294,7 @@
                         <constraint firstItem="ng2-dt-g8q" firstAttribute="width" secondItem="ih1-aA-sLo" secondAttribute="width" id="Hxj-3G-I5a"/>
                         <constraint firstItem="um5-n9-5TF" firstAttribute="top" secondItem="6dW-Ek-agN" secondAttribute="bottom" constant="4" id="LQy-JJ-aiQ"/>
                         <constraint firstItem="rPS-or-pao" firstAttribute="top" secondItem="um5-n9-5TF" secondAttribute="bottom" constant="4" id="MxN-wb-IGg"/>
+                        <constraint firstItem="JSC-i3-GXk" firstAttribute="top" secondItem="acq-CY-tn1" secondAttribute="top" id="P9Z-FK-yU6"/>
                         <constraint firstItem="um5-n9-5TF" firstAttribute="leading" secondItem="bKH-GY-TML" secondAttribute="trailing" constant="2" id="Q3I-6X-VkO"/>
                         <constraint firstItem="O1I-Qz-nG8" firstAttribute="leading" secondItem="JSC-i3-GXk" secondAttribute="leading" id="QS2-pw-hjN"/>
                         <constraint firstItem="BF6-r0-2I7" firstAttribute="leading" secondItem="vkq-tI-8w4" secondAttribute="leading" constant="7" id="RTk-G1-Kjg"/>
@@ -295,7 +302,6 @@
                         <constraint firstItem="0yL-VG-sGr" firstAttribute="leading" secondItem="L2x-wm-hbt" secondAttribute="trailing" constant="2" id="UE9-uL-Cca"/>
                         <constraint firstItem="gcE-is-gSc" firstAttribute="height" secondItem="O1I-Qz-nG8" secondAttribute="height" id="UNF-YZ-6oL"/>
                         <constraint firstItem="ih1-aA-sLo" firstAttribute="leading" secondItem="BF6-r0-2I7" secondAttribute="trailing" constant="2" id="ZKz-NG-P5K"/>
-                        <constraint firstItem="JSC-i3-GXk" firstAttribute="top" secondItem="vkq-tI-8w4" secondAttribute="top" constant="7" id="aQB-1I-9qZ"/>
                         <constraint firstItem="O1I-Qz-nG8" firstAttribute="trailing" secondItem="JSC-i3-GXk" secondAttribute="trailing" id="aV3-WD-hfS"/>
                         <constraint firstItem="zV7-eN-zgq" firstAttribute="top" secondItem="BF6-r0-2I7" secondAttribute="bottom" constant="8" id="aZZ-tJ-msL"/>
                         <constraint firstItem="L2x-wm-hbt" firstAttribute="leading" secondItem="vkq-tI-8w4" secondAttribute="leading" constant="7" id="bgX-7P-aoF"/>

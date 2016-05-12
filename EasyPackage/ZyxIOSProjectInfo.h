@@ -21,7 +21,6 @@
 
 - (instancetype)initWithRootPath:(NSString *)rootPath;
 
-+ (BOOL)isVersionStringValid:(NSString *)version;
 - (BOOL)setProjectVersion:(NSString *)version;
 
 @end
