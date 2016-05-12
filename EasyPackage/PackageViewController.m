@@ -217,8 +217,26 @@
     }
     self.packageButton.enabled = YES;
     
-    self.config = [[ZyxPackageConfig alloc] initWithRootPath:rootPath];
-    self.versionTextField.stringValue = self.config.project.version;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        ZyxPackageConfig *config = [[ZyxPackageConfig alloc] initWithRootPath:rootPath];
+        ZyxIOSProjectInfo *project = config.project;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.versionTextField.stringValue = project.version;
+            [self.configurationsComboBox addItemsWithObjectValues:project.configurations];
+            [self.targetsComboBox addItemsWithObjectValues:project.targets];
+            [self.schemesComboBox addItemsWithObjectValues:project.schemes];
+            
+            [self.configurationsComboBox selectItemAtIndex:0];
+            [self.targetsComboBox selectItemAtIndex:0];
+            [self.schemesComboBox selectItemAtIndex:0];
+            
+//            self.targetsComboBox.enabled = !project.isWorkspace;
+//            self.schemesComboBox.enabled = project.isWorkspace;
+            
+            self.config = config;
+        });
+    });
 }
 
 // IPA Path

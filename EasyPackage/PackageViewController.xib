@@ -10,11 +10,14 @@
             <connections>
                 <outlet property="cancelButton" destination="ZyO-iM-qlA" id="XFO-xr-L2d"/>
                 <outlet property="codeSignTextField" destination="nYA-TA-mS9" id="JvT-zh-mP6"/>
+                <outlet property="configurationsComboBox" destination="xYG-rc-jz5" id="Oqj-N2-0Sn"/>
                 <outlet property="ipaTextField" destination="lGM-2u-LeZ" id="ntt-iQ-dbN"/>
                 <outlet property="outputTextView" destination="ayX-Vx-jm2" id="dz5-GL-9Je"/>
                 <outlet property="packageButton" destination="FPs-vc-miI" id="uUC-oD-EZR"/>
                 <outlet property="profileTextField" destination="ZIr-vT-MTK" id="doj-nR-9CE"/>
                 <outlet property="projectRootDirTextField" destination="FxB-Fp-YDk" id="ToK-Kg-rUl"/>
+                <outlet property="schemesComboBox" destination="fKW-cs-2WA" id="88J-27-zm9"/>
+                <outlet property="targetsComboBox" destination="x4T-X6-UrU" id="PYR-hb-Laq"/>
                 <outlet property="versionTextField" destination="ugI-Mz-MpR" id="Mnj-ay-ULO"/>
                 <outlet property="view" destination="XoD-m5-E8j" id="nOR-IN-POR"/>
             </connections>
@@ -239,11 +242,6 @@
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <objectValues>
-                                        <string>Item 1</string>
-                                        <string>Item 2</string>
-                                        <string>Item 3</string>
-                                    </objectValues>
                                 </comboBoxCell>
                             </comboBox>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="P8y-92-Lay">
@@ -291,11 +289,6 @@
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <objectValues>
-                                        <string>Item 1</string>
-                                        <string>Item 2</string>
-                                        <string>Item 3</string>
-                                    </objectValues>
                                 </comboBoxCell>
                             </comboBox>
                             <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x4T-X6-UrU" userLabel="TargetComboBox">
@@ -307,11 +300,6 @@
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <objectValues>
-                                        <string>Item 1</string>
-                                        <string>Item 2</string>
-                                        <string>Item 3</string>
-                                    </objectValues>
                                 </comboBoxCell>
                             </comboBox>
                         </subviews>
@@ -385,10 +373,10 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <size key="minSize" width="455" height="168"/>
-                                            <size key="maxSize" width="468" height="10000000"/>
+                                            <size key="maxSize" width="617" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                             <size key="minSize" width="455" height="168"/>
-                                            <size key="maxSize" width="468" height="10000000"/>
+                                            <size key="maxSize" width="617" height="10000000"/>
                                         </textView>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -462,7 +450,7 @@
                 <constraint firstItem="VQ6-oh-Tc5" firstAttribute="top" secondItem="seH-YY-lMG" secondAttribute="bottom" constant="20" id="p4Q-Ro-blx"/>
                 <constraint firstItem="6Mk-YE-4Cm" firstAttribute="leading" secondItem="XoD-m5-E8j" secondAttribute="leading" constant="8" id="rp0-CS-5mg"/>
             </constraints>
-            <point key="canvasLocation" x="68" y="-89.5"/>
+            <point key="canvasLocation" x="43" y="-263.5"/>
         </view>
     </objects>
 </document>

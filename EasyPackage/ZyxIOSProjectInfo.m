@@ -64,18 +64,26 @@ const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
     
     result &= [scanner scanUpToString:@"Configurations:" intoString:nil];
     [scanner scanString:@"Configurations:" intoString:nil];
-    NSString *configurationsString = nil;
-    result &= [scanner scanUpToString:@"\n\n" intoString:&configurationsString];
+    NSString *configsString = nil;
+    result &= [scanner scanUpToString:@"\n\n" intoString:&configsString];
     
     result &= [scanner scanUpToString:@"Schemes:" intoString:nil];
     [scanner scanString:@"Schemes:" intoString:nil];
     NSString *schemesString = nil;
     result &= [scanner scanUpToString:@"\n" intoString:&schemesString];
-    NSLog(@"project configs %@", @(result));
     
-    self.targets = [targetsString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    self.configurations = [configurationsString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    self.schemes = [schemesString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSString *seperater = @"\n        ";
+    self.configurations = [configsString componentsSeparatedByString:seperater];
+    self.schemes = [schemesString componentsSeparatedByString:seperater];
+    
+    NSArray *allTargets = [targetsString componentsSeparatedByString:seperater];
+    NSMutableArray *targets = [NSMutableArray array];
+    for (NSString *item in allTargets) {
+        if (![item hasSuffix:@"Tests"]) {
+            [targets addObject:item];
+        }
+    }
+    self.targets = targets;
 }
 
 - (NSArray<NSString *> *)getStaticLibrariesPaths {

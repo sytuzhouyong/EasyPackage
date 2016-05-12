@@ -25,6 +25,7 @@
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
     windowController.contentViewController = vc;
     self.window.windowController = windowController;
+    [self.window setContentSize:CGSizeMake(640, 640)];
     [self.window center];
 }
 

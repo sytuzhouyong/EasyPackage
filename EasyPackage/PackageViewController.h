@@ -13,6 +13,9 @@
 
 @property (nonatomic, strong) IBOutlet NSTextField *projectRootDirTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *versionTextField;
+@property (nonatomic, strong) IBOutlet NSComboBox *configurationsComboBox;
+@property (nonatomic, strong) IBOutlet NSComboBox *targetsComboBox;
+@property (nonatomic, strong) IBOutlet NSComboBox *schemesComboBox;
 @property (nonatomic, strong) IBOutlet NSTextField *ipaTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *codeSignTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *profileTextField;
