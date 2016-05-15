@@ -46,6 +46,22 @@
     }
 }
 
++ (void)selectPathInTextField:(NSTextField *)textField {
+    [self openSelectDialogWithType:ZyxSelectDialogTypeDirectory handler:^(NSString *path) {
+        if (path != nil) {
+            textField.stringValue = path;
+        }
+    }];
+}
+
++ (void)selectFileInTextField:(NSTextField *)textField {
+    [self openSelectDialogWithType:ZyxSelectDialogTypeFile handler:^(NSString *path) {
+        if (path != nil) {
+            textField.stringValue = path;
+        }
+    }];
+}
+
 + (BOOL)isRootPathValid:(NSString *)rootPath {
     NSString *path = [rootPath stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     if (path.length == 0) {

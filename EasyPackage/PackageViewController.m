@@ -60,7 +60,7 @@
 
 - (void)makePackageTasks {
     NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _config.buildPath];
-    NSString *cleanProjectCommand = @"/usr/bin/xcodebuild clean -configuration Release";
+    NSString *cleanProjectCommand = [NSString stringWithFormat:@"/usr/bin/xcodebuild clean -configuration %@", _config.configuration];
     NSString *makeIPAPathCommand = [NSString stringWithFormat:@"mkdir -p %@", _config.ipaPath];
     NSArray *tasks = @[[ZyxTaskUtil taskWithShell:rmBuildCommand],
                        [ZyxTaskUtil taskWithShell:cleanProjectCommand path:_config.rootPath],
@@ -98,7 +98,7 @@
     NSFileHandle *fileHandle = notification.object;
     
     dispatch_async(self.packageQueue, ^{
-        NSData *data = nil;//fileHandle.availableData;
+        NSData *data = nil;
         while ((data = fileHandle.availableData) && data.length > 0) {
             NSTask *task = self.tasks.firstObject;
             if (self.isCanceled && task != nil) {
@@ -109,11 +109,11 @@
             NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             NSLog(@"text = %@", text);
             
-            NSString *string = [NSString stringWithFormat:@"%@%@", self.outputTextView.string, text];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.outputTextView.string = string;
-                [self.outputTextView scrollRangeToVisible:NSMakeRange(self.outputTextView.string.length, 1)];
-            });
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                NSString *string = [NSString stringWithFormat:@"%@%@", self.outputTextView.string, text];
+//                self.outputTextView.string = string;
+//                [self.outputTextView scrollRangeToVisible:NSMakeRange(self.outputTextView.string.length, 1)];
+//            });
         }
     });
 }
@@ -145,7 +145,6 @@
             self.packageButton.enabled = NO;
             self.cancelButton.enabled = YES;
             [self executeTaskSync:self.tasks.lastObject];
-            [self.tasks removeAllObjects];
             [Util showAlertWithMessage:@"打包失败"];
         }
         
@@ -209,7 +208,7 @@
 
 // 项目根目录
 - (IBAction)selectProjectRootPath:(NSButton *)button {
-    [self selectPathInTextField:self.projectRootDirTextField];
+    [Util selectPathInTextField:self.projectRootDirTextField];
     NSString *rootPath = self.projectRootDirTextField.stringValue;
     if (![Util isRootPathValid:rootPath]) {
         [Util showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
@@ -227,10 +226,13 @@
             [self.targetsComboBox addItemsWithObjectValues:project.targets];
             [self.schemesComboBox addItemsWithObjectValues:project.schemes];
             
-            [self.configurationsComboBox selectItemAtIndex:0];
+            [self.configurationsComboBox selectItemAtIndex:project.configurations.count-1];
             [self.targetsComboBox selectItemAtIndex:0];
             [self.schemesComboBox selectItemAtIndex:0];
             
+            config.configuration = project.configurations[0];
+            config.target = project.targets[0];
+            config.scheme = project.schemes[0];
 //            self.targetsComboBox.enabled = !project.isWorkspace;
 //            self.schemesComboBox.enabled = project.isWorkspace;
             
@@ -241,16 +243,28 @@
 
 // IPA Path
 - (IBAction)selectIPAPathButtonPressed:(NSButton *)button {
-    [self selectPathInTextField:self.ipaTextField];
+    [Util selectPathInTextField:self.ipaTextField];
     NSString *path = self.ipaTextField.stringValue;
     if (path.length != 0) {
         self.config.ipaPath = path;
     }
 }
 
+- (IBAction)configComboBoxValueChanged:(NSComboBox *)comboBox {
+    self.config.configuration = self.config.project.configurations[comboBox.indexOfSelectedItem];
+}
+
+- (IBAction)targetComboBoxValueChanged:(NSComboBox *)comboBox {
+    self.config.target = self.config.project.targets[comboBox.indexOfSelectedItem];
+}
+
+- (IBAction)schemeComboBoxValueChanged:(NSComboBox *)comboBox {
+    self.config.scheme = self.config.project.schemes[comboBox.indexOfSelectedItem];
+}
+
 // Profile File
 - (IBAction)selectProvisionProfilePathButtonPressed:(NSButton *)button {
-    [self selectFileInTextField:self.profileTextField];
+    [Util selectFileInTextField:self.profileTextField];
     NSString *path = self.profileTextField.stringValue;
     if (path.length != 0) {
         self.config.provisionProfilePath = path;
@@ -258,22 +272,6 @@
 }
 
 #pragma mark -
-
-- (void)selectPathInTextField:(NSTextField *)textField {
-    [Util openSelectDialogWithType:ZyxSelectDialogTypeDirectory handler:^(NSString *path) {
-        if (path != nil) {
-            textField.stringValue = path;
-        }
-    }];
-}
-
-- (void)selectFileInTextField:(NSTextField *)textField {
-    [Util openSelectDialogWithType:ZyxSelectDialogTypeFile handler:^(NSString *path) {
-        if (path != nil) {
-            textField.stringValue = path;
-        }
-    }];
-}
 
 #pragma mark - 配置管理
 

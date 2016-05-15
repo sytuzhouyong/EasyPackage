@@ -43,7 +43,7 @@
 
 // "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist
 - (NSTask *)buildTask {
-    NSMutableString *commonCommand = [NSMutableString stringWithFormat:@"-configuration Release -sdk iphoneos OBJROOT=%@ TARGET_BUILD_DIR=%@ ", _buildPath, _buildPath];
+    NSMutableString *commonCommand = [NSMutableString stringWithFormat:@"-configuration %@ -sdk iphoneos OBJROOT=%@ TARGET_BUILD_DIR=%@ ", _configuration, _buildPath, _buildPath];
     // @"CODE_SIGN_IDENTITY=iphoneos/ResourceRules.plist \\"
     
     if (_codesign.length > 0) {
@@ -56,9 +56,9 @@
     
     NSString *differentParamString = nil;
     if (_project.isWorkspace) {
-        differentParamString = [NSString stringWithFormat:@"-workspace %@.xcworkspace -scheme %@", _project.name, _project.name];
+        differentParamString = [NSString stringWithFormat:@"-workspace %@.xcworkspace -scheme %@", _project.name, _scheme];
     } else {
-        differentParamString = [NSString stringWithFormat:@"-target %@", _project.name];
+        differentParamString = [NSString stringWithFormat:@"-target %@", _target];
     }
     
     NSString *shell = [NSString stringWithFormat:@"/usr/bin/xcodebuild %@ %@", differentParamString, commonCommand];

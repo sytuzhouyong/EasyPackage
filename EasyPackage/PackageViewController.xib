@@ -243,6 +243,9 @@
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </comboBoxCell>
+                                <connections>
+                                    <action selector="configComboBoxValueChanged:" target="-2" id="4RD-M3-Vc7"/>
+                                </connections>
                             </comboBox>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="P8y-92-Lay">
                                 <rect key="frame" x="230" y="204" width="104" height="17"/>
@@ -290,6 +293,9 @@
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </comboBoxCell>
+                                <connections>
+                                    <action selector="schemeComboBoxValueChanged:" target="-2" id="1Z3-cM-QCk"/>
+                                </connections>
                             </comboBox>
                             <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x4T-X6-UrU" userLabel="TargetComboBox">
                                 <rect key="frame" x="96" y="170" width="129" height="26"/>
@@ -301,6 +307,9 @@
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </comboBoxCell>
+                                <connections>
+                                    <action selector="targetComboBoxValueChanged:" target="-2" id="LF7-c3-B1W"/>
+                                </connections>
                             </comboBox>
                         </subviews>
                         <constraints>
