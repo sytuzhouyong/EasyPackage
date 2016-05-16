@@ -21,9 +21,9 @@ typedef NS_ENUM(NSUInteger, ZyxSelectDialogType) {
 
 + (void)showAlertWithMessage:(NSString *)message;
 
-+ (void)selectPathInTextField:(NSTextField *)textField;
-+ (void)selectFileInTextField:(NSTextField *)textField;
-+ (void)openSelectDialogWithType:(ZyxSelectDialogType)type handler:(SelectDialogHandler)handler;
++ (BOOL)selectPathInTextField:(NSTextField *)textField;
++ (BOOL)selectFileInTextField:(NSTextField *)textField;
++ (BOOL)openSelectDialogWithType:(ZyxSelectDialogType)type handler:(SelectDialogHandler)handler;
 
 + (BOOL)isRootPathValid:(NSString *)rootPath;
 + (BOOL)isVersionStringValid:(NSString *)version;

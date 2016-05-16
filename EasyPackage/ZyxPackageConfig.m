@@ -12,8 +12,29 @@
 
 @implementation ZyxPackageConfig
 
+- (void)commonInit {
+    self.name = @"";
+    self.rootPath = @"";
+    self.configuration = @"";
+    self.target = @"";
+    self.scheme = @"";
+    self.buildPath = @"";
+    self.ipaPath = @"";
+    self.codesign = @"";
+    self.provisionProfilePath = @"";
+    self.project = [ZyxIOSProjectInfo new];
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        [self commonInit];
+    }
+    return self;
+}
+
 - (instancetype)initWithRootPath:(NSString *)rootPath {
     if (self = [super init]) {
+        [self commonInit];
         self.rootPath = rootPath;
         
         if (rootPath.length > 0) {
@@ -29,7 +50,6 @@
     if (self = [super init]) {
         self.name = dict[@"name"];
         self.rootPath = dict[@"rootPath"];
-        self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:self.rootPath];
         self.configuration = dict[@"configuration"];
         self.target = dict[@"target"];
         self.scheme = dict[@"scheme"];
@@ -37,8 +57,20 @@
         self.ipaPath = dict[@"ipaPath"];
         self.codesign = dict[@"codesign"];
         self.provisionProfilePath = dict[@"provisionProfilePath"];
+        
+        if (self.rootPath.length > 0) {
+            self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:self.rootPath];
+        }
     }
     return self;
+}
+
+- (void)setRootPath:(NSString *)rootPath {
+    _rootPath = rootPath;
+    
+    self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:rootPath];
+    self.buildPath = [rootPath stringByAppendingPathComponent:@"build"];
+    self.ipaPath = [rootPath stringByAppendingPathComponent:@"ipa"];
 }
 
 // "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist

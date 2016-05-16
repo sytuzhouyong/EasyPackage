@@ -208,9 +208,9 @@
 
 // 项目根目录
 - (IBAction)selectProjectRootPath:(NSButton *)button {
-    [Util selectPathInTextField:self.projectRootDirTextField];
+    BOOL selected = [Util selectPathInTextField:self.projectRootDirTextField];
     NSString *rootPath = self.projectRootDirTextField.stringValue;
-    if (![Util isRootPathValid:rootPath]) {
+    if (selected && ![Util isRootPathValid:rootPath]) {
         [Util showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
         return;
     }
@@ -222,6 +222,11 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             self.versionTextField.stringValue = project.version;
+            
+            [self.configurationsComboBox removeAllItems];
+            [self.targetsComboBox removeAllItems];
+            [self.schemesComboBox removeAllItems];
+            
             [self.configurationsComboBox addItemsWithObjectValues:project.configurations];
             [self.targetsComboBox addItemsWithObjectValues:project.targets];
             [self.schemesComboBox addItemsWithObjectValues:project.schemes];

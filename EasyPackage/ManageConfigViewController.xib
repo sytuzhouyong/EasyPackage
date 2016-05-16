@@ -157,7 +157,7 @@
                                 <constraint firstAttribute="height" constant="17" id="65y-Qx-K4n"/>
                                 <constraint firstAttribute="width" constant="91" id="aJf-pT-smo"/>
                             </constraints>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="描述文件目录：" id="gZT-iP-ijD">
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="描述文件路径：" id="gZT-iP-ijD">
                                 <font key="font" size="13" name=".PingFangSC-Regular"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -180,6 +180,9 @@
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
+                            <connections>
+                                <action selector="selectIPAPathButtonPressed:" target="-2" id="3ih-nN-4Go"/>
+                            </connections>
                         </button>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gcE-is-gSc">
                             <rect key="frame" x="312" y="46" width="40" height="32"/>
@@ -187,6 +190,9 @@
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
+                            <connections>
+                                <action selector="selectProvisionProfilePathButtonPressed:" target="-2" id="Q6d-6k-MLk"/>
+                            </connections>
                         </button>
                         <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0yL-VG-sGr">
                             <rect key="frame" x="100" y="124" width="209" height="26"/>
@@ -253,6 +259,9 @@
                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
+                            <connections>
+                                <outlet property="delegate" destination="-2" id="9e4-gG-id4"/>
+                            </connections>
                         </textField>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JSC-i3-GXk">
                             <rect key="frame" x="312" y="204" width="40" height="32"/>

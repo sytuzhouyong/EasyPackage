@@ -19,7 +19,7 @@
     [alert runModal];
 }
 
-+ (void)openSelectDialogWithType:(ZyxSelectDialogType)type handler:(SelectDialogHandler)handler {
++ (BOOL)openSelectDialogWithType:(ZyxSelectDialogType)type handler:(SelectDialogHandler)handler {
     NSOpenPanel* dialog = [NSOpenPanel openPanel];
     dialog.allowsMultipleSelection = NO;
     
@@ -37,25 +37,27 @@
             break;
     }
     
-    if ([dialog runModal] == NSModalResponseOK) {
+    BOOL selected = [dialog runModal] == NSModalResponseOK;
+    if (selected) {
         NSURL *url = dialog.URLs.firstObject;
         NSString *path = url.path;
         if (handler != nil) {
             handler(path);
         }
     }
+    return selected;
 }
 
-+ (void)selectPathInTextField:(NSTextField *)textField {
-    [self openSelectDialogWithType:ZyxSelectDialogTypeDirectory handler:^(NSString *path) {
++ (BOOL)selectPathInTextField:(NSTextField *)textField {
+    return [self openSelectDialogWithType:ZyxSelectDialogTypeDirectory handler:^(NSString *path) {
         if (path != nil) {
             textField.stringValue = path;
         }
     }];
 }
 
-+ (void)selectFileInTextField:(NSTextField *)textField {
-    [self openSelectDialogWithType:ZyxSelectDialogTypeFile handler:^(NSString *path) {
++ (BOOL)selectFileInTextField:(NSTextField *)textField {
+    return [self openSelectDialogWithType:ZyxSelectDialogTypeFile handler:^(NSString *path) {
         if (path != nil) {
             textField.stringValue = path;
         }

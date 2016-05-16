@@ -13,14 +13,26 @@ const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
 
 @implementation ZyxIOSProjectInfo
 
+- (instancetype)init {
+    if (self = [super init]) {
+        self.rootPath = @"";
+        self.name = @"";
+        self.version = @"";
+    }
+    return self;
+}
+
 - (instancetype)initWithRootPath:(NSString *)rootPath {
     if (self = [super init]) {
         self.rootPath = rootPath;
-        self.name = [self getProjectName];
-        self.version = [self getProjectVersion];
-        self.isWorkspace = [self judgeIsWorkspace];
-        self.staticLibrariesPaths = [self getStaticLibrariesPaths];
-        [self setupProjectConfigs];
+        
+        if (rootPath.length > 0) {
+            self.name = [self getProjectName];
+            self.version = [self getProjectVersion];
+            self.isWorkspace = [self judgeIsWorkspace];
+            self.staticLibrariesPaths = [self getStaticLibrariesPaths];
+            [self setupProjectConfigs];
+        }
     }
     return self;
 }
