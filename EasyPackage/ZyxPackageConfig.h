@@ -19,7 +19,6 @@
 @property (nonatomic, copy) NSString *scheme;
 @property (nonatomic, copy) NSString *buildPath;
 @property (nonatomic, copy) NSString *ipaPath;
-@property (nonatomic, copy) NSString *codesign;
 @property (nonatomic, copy) NSString *provisionProfilePath;
 
 - (instancetype)initWithRootPath:(NSString *)rootPath;

@@ -91,6 +91,7 @@ const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
     NSArray *allTargets = [targetsString componentsSeparatedByString:seperater];
     NSMutableArray *targets = [NSMutableArray array];
     for (NSString *item in allTargets) {
+        // 过滤掉所有Tests的target
         if (![item hasSuffix:@"Tests"]) {
             [targets addObject:item];
         }

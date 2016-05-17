@@ -10,7 +10,10 @@
 #import "ZyxTaskUtil.h"
 #import "Util.h"
 
-@implementation ZyxPackageConfig
+@implementation ZyxPackageConfig {
+    NSString *_codesign;
+    NSString *_uuid;
+}
 
 - (void)commonInit {
     self.name = @"";
@@ -20,7 +23,6 @@
     self.scheme = @"";
     self.buildPath = @"";
     self.ipaPath = @"";
-    self.codesign = @"";
     self.provisionProfilePath = @"";
     self.project = [ZyxIOSProjectInfo new];
 }
@@ -55,7 +57,6 @@
         self.scheme = dict[@"scheme"];
         self.buildPath = dict[@"buildPath"];
         self.ipaPath = dict[@"ipaPath"];
-        self.codesign = dict[@"codesign"];
         self.provisionProfilePath = dict[@"provisionProfilePath"];
         
         if (self.rootPath.length > 0) {
@@ -73,17 +74,26 @@
     self.ipaPath = [rootPath stringByAppendingPathComponent:@"ipa"];
 }
 
+- (void)setProvisionProfilePath:(NSString *)provisionProfilePath {
+    _provisionProfilePath = provisionProfilePath;
+    if (provisionProfilePath.length == 0) {
+        return;
+    }
+    
+    NSArray<NSString *> *infos = [self infoFromProvisionProfileAtPath:provisionProfilePath];
+    if (infos != nil) {
+        _codesign = infos[0];
+        _uuid = infos[1];
+    }
+}
+
 // "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist
 - (NSTask *)buildTask {
     NSMutableString *commonCommand = [NSMutableString stringWithFormat:@"-configuration %@ -sdk iphoneos OBJROOT=%@ TARGET_BUILD_DIR=%@ ", _configuration, _buildPath, _buildPath];
-    // @"CODE_SIGN_IDENTITY=iphoneos/ResourceRules.plist \\"
+    // @"CODE_SIGN_RESOURCE_RULES_PATH=iphoneos/ResourceRules.plist \\"
     
-    if (_codesign.length > 0) {
-        [commonCommand appendFormat:@"CODE_SIGN_IDENTITY=\"%@\" ", _codesign];
-    }
     if (_provisionProfilePath.length > 0) {
-        NSString *UUID = [self uuidFromProvisionProfileAtPath:self.provisionProfilePath];
-        [commonCommand appendFormat:@"PROVISIONING_PROFILE=%@ ", UUID];
+        [commonCommand appendFormat:@"CODE_SIGN_IDENTITY=\"%@\" PROVISIONING_PROFILE=%@ ", _codesign, _uuid];
     }
     
     NSString *differentParamString = nil;
@@ -99,7 +109,7 @@
 
 - (NSTask *)makeIPATask {
     NSMutableString *shell = [NSMutableString stringWithFormat:@"/usr/bin/xcrun -sdk iphoneos PackageApplication -v %@/%@.app -o %@/%@-%@.ipa", _buildPath, _project.name, _ipaPath, _project.name, _project.version];
-    if (_codesign.length > 0 && _provisionProfilePath.length > 0) {
+    if (_provisionProfilePath.length > 0) {
         [shell appendFormat:@"--embed %@ --sign \"%@\"", _provisionProfilePath, _codesign];
     }
     return [ZyxTaskUtil taskWithShell:shell path:self.rootPath];
@@ -118,10 +128,49 @@
 
 #pragma mark - Util Methods
 
-- (NSString *)uuidFromProvisionProfileAtPath:(NSString *)path {
-    NSString *shell = [NSString stringWithFormat:@"/usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin <<< $(security cms -D -i %@)", path];
-    NSString *result = [ZyxTaskUtil resultOfExecuteShell:shell];
-    return result;
+- (NSArray<NSString *> *)infoFromProvisionProfileAtPath:(NSString *)path {
+    NSString *dir = [path stringByDeletingLastPathComponent];
+    NSString *tempPlistPath = @"temp.plist";
+    NSString *relativePath = [path lastPathComponent];
+    
+    NSString *shell = [NSString stringWithFormat:@"rm %@", tempPlistPath];
+    NSString *result = [ZyxTaskUtil resultOfExecuteShell:shell atPath:dir];
+    if (result.length != 0) {
+        return nil;
+    }
+    
+    shell = [NSString stringWithFormat:@"security cms -D -i %@>%@", relativePath, tempPlistPath];
+    result = [ZyxTaskUtil resultOfExecuteShell:shell atPath:dir];
+    if (result.length != 0) {
+        return nil;
+    }
+    
+    shell = [NSString stringWithFormat:@"echo `/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' %@ | openssl x509 -subject -inform der | head -n 1`", tempPlistPath];
+    NSString *infoString = [ZyxTaskUtil resultOfExecuteShell:shell atPath:dir];
+    if (infoString.length == 0) {
+        return nil;
+    }
+    
+    // codesign
+    shell = [NSString stringWithFormat:@"echo `echo \"%@\" | cut -d \"/\" -f3 | cut -d \"=\" -f2`", infoString];
+    NSString *codesign = [ZyxTaskUtil resultOfExecuteShell:shell atPath:dir];
+    if (codesign.length == 0) {
+        return nil;
+    }
+    codesign = [codesign stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    // uuid
+    shell = [NSString stringWithFormat:@"/usr/libexec/PlistBuddy -c 'Print :UUID' %@", tempPlistPath];
+    NSString *uuid = [ZyxTaskUtil resultOfExecuteShell:shell atPath:dir];
+    if (uuid.length == 0) {
+        return nil;
+    }
+    uuid = [uuid stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    shell = [NSString stringWithFormat:@"rm %@", tempPlistPath];
+    result = [ZyxTaskUtil resultOfExecuteShell:shell atPath:dir];
+    
+    return @[codesign, uuid];
 }
 
 - (NSDictionary *)jsonValues {
@@ -131,7 +180,6 @@
              @"target":     SafeString(self.target),
              @"scheme":     SafeString(self.scheme),
              @"ipaPath":    SafeString(self.ipaPath),
-             @"codesign":   SafeString(self.codesign),
              @"provisionProfilePath": SafeString(self.provisionProfilePath),
              };
 }

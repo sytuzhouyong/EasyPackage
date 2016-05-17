@@ -188,7 +188,6 @@
     self.cancelButton.enabled = YES;
     
     self.outputTextView.string = @"";
-    self.config.codesign = self.codeSignTextField.stringValue;
     
     [self makePackageTasks];
     [self addObservers];
@@ -209,8 +208,12 @@
 // 项目根目录
 - (IBAction)selectProjectRootPath:(NSButton *)button {
     BOOL selected = [Util selectPathInTextField:self.projectRootDirTextField];
+    if (!selected) {
+        return;
+    }
+    
     NSString *rootPath = self.projectRootDirTextField.stringValue;
-    if (selected && ![Util isRootPathValid:rootPath]) {
+    if (![Util isRootPathValid:rootPath]) {
         [Util showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
         return;
     }
@@ -224,22 +227,19 @@
             self.versionTextField.stringValue = project.version;
             
             [self.configurationsComboBox removeAllItems];
+            [self.configurationsComboBox addItemsWithObjectValues:project.configurations];
+            [self.configurationsComboBox selectItemAtIndex:project.configurations.count-1];
+            
             [self.targetsComboBox removeAllItems];
             [self.schemesComboBox removeAllItems];
-            
-            [self.configurationsComboBox addItemsWithObjectValues:project.configurations];
             [self.targetsComboBox addItemsWithObjectValues:project.targets];
             [self.schemesComboBox addItemsWithObjectValues:project.schemes];
-            
-            [self.configurationsComboBox selectItemAtIndex:project.configurations.count-1];
             [self.targetsComboBox selectItemAtIndex:0];
             [self.schemesComboBox selectItemAtIndex:0];
             
             config.configuration = project.configurations[0];
             config.target = project.targets[0];
             config.scheme = project.schemes[0];
-//            self.targetsComboBox.enabled = !project.isWorkspace;
-//            self.schemesComboBox.enabled = project.isWorkspace;
             
             self.config = config;
         });
