@@ -37,12 +37,32 @@
     NSMenuItem *manageConfigMenuItem = [self configMenuItem];
     manageConfigMenuItem.target = self;
     manageConfigMenuItem.action = @selector(configManageButtonPressed);
+    
+    [self addConfigItems];
 }
 
 - (NSMenuItem *)configMenuItem {
-    NSMenuItem *configMenuItems = [NSApp mainMenu].itemArray[2];
+    NSMenuItem *configMenuItems = [NSApp mainMenu].itemArray[1];
     NSMenuItem *manageConfigMenuItem = configMenuItems.submenu.itemArray.firstObject;
     return manageConfigMenuItem;
+}
+
+- (void)addConfigItems {
+    NSMenu *configMenu = [NSApp mainMenu].itemArray[1].submenu;
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSArray<ZyxPackageConfig *> *configs = [ZyxPackageConfig localConfigs];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (ZyxPackageConfig *config in configs) {
+                NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:config.name action:@selector(menuItemSelected:) keyEquivalent:@""];
+                [configMenu addItem:item];
+            }
+        });
+    });
+}
+
+- (void)menuItemSelected:(NSMenuItem *)menuItem {
+    ;
 }
 
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过

@@ -184,5 +184,21 @@
              };
 }
 
++ (NSMutableArray<ZyxPackageConfig *> *)localConfigs {
+    NSString *configsFilePath = [[NSBundle mainBundle] pathForResource:@"configs" ofType:@"plist"];
+    
+    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:configsFilePath];
+    NSArray *configDicts = plist[@"configs"];
+    if (configDicts == nil) {
+        return nil;
+    }
+    
+    NSMutableArray *configs = [NSMutableArray array];
+    for (NSDictionary *dict in configDicts) {
+        ZyxPackageConfig *config = [[ZyxPackageConfig alloc] initWithDict:dict];
+        [configs addObject:config];
+    }
+    return configs;
+}
 
 @end

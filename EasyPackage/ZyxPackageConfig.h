@@ -30,4 +30,6 @@
 
 - (NSDictionary *)jsonValues;
 
++ (NSMutableArray<ZyxPackageConfig *> *)localConfigs;
+
 @end

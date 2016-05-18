@@ -24,8 +24,8 @@
     [super viewDidLoad];
     // Do view setup here.
     self.configsFilePath = [[NSBundle mainBundle] pathForResource:@"configs" ofType:@"plist"];
-    [self setupConfigs];
     
+    self.configs = [ZyxPackageConfig localConfigs];
     if (self.configs.count == 0) {
         return;
     }
@@ -87,21 +87,6 @@
 }
 
 #pragma mark - Button Actions
-
-- (void)setupConfigs {
-    self.configs = [NSMutableArray array];
-    
-    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:self.configsFilePath];
-    NSArray *configs = plist[@"configs"];
-    if (configs == nil) {
-        return;
-    }
-    
-    for (NSDictionary *dict in configs) {
-        ZyxPackageConfig *config = [[ZyxPackageConfig alloc] initWithDict:dict];
-        [self.configs addObject:config];
-    }
-}
 
 // 项目根目录
 - (IBAction)selectProjectRootPath:(NSButton *)button {
