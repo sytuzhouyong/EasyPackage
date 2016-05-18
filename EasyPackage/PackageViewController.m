@@ -68,7 +68,6 @@
                        [_config copyStaticLibrariesTask],
                        [ZyxTaskUtil taskWithShell:makeIPAPathCommand],
                        [_config makeIPATask],
-                       [ZyxTaskUtil taskWithShell:rmBuildCommand],
                        ];
     self.tasks = [NSMutableArray arrayWithArray:tasks];
 }
@@ -124,7 +123,7 @@
     static int index = 1;
     NSTask *task = notification.object;
     int status = [task terminationStatus];
-    NSLog(@"task[%@] success: %@", @(index), @(task.terminationReason));
+    NSLog(@"task[%@] terminated: %@", @(index), @(task.terminationReason));
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.isCanceled) {
@@ -135,8 +134,8 @@
     //        [self executeTaskSync:self.tasks.lastObject];
             self.isCanceled = NO;
             
-            [self removeObservers];
             [Util showAlertWithMessage:@"取消打包成功"];
+            [self clear];
             return;
         }
         
@@ -144,11 +143,12 @@
             NSLog(@"Task[%@] failed.", @(index));
             self.packageButton.enabled = NO;
             self.cancelButton.enabled = YES;
-            [self executeTaskSync:self.tasks.lastObject];
             [Util showAlertWithMessage:@"打包失败"];
+            [self clear];
+            return;
         }
         
-        NSLog(@"Task[%@] finished.", @(index));
+        NSLog(@"Task[%@] success.", @(index));
         // 移除掉完成的任务
         if (self.tasks.count != 0) {
             [self.tasks removeObjectAtIndex:0];
@@ -161,13 +161,21 @@
             
             NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@-%@.ipa", _config.ipaPath, _config.project.name, _config.project.version];
             [Util showAlertWithMessage:message];
-            [self removeObservers];
+            [self clear];
             return;
-        } else {
-            [self executeTaskAsync:self.tasks.firstObject];
-            index++;
         }
+        
+        index++;
+        [self executeTaskAsync:self.tasks.firstObject];
     });
+}
+
+- (void)clear {
+    [self removeObservers];
+    
+    NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _config.buildPath];
+    NSTask *task = [ZyxTaskUtil taskWithShell:rmBuildCommand];
+    [self executeTaskSync:task];
 }
 
 #pragma mark - Button Action
