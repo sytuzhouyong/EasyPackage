@@ -17,8 +17,10 @@
 
 @property (nonatomic, strong) dispatch_queue_t packageQueue;
 @property (nonatomic, strong) NSMutableArray<NSTask *> *tasks;
+@property (nonatomic, strong) NSArray<NSString *> *taskTips;
 @property (nonatomic, strong) ZyxPackageConfig *config;
 @property (nonatomic, assign) BOOL isCanceled;
+@property (nonatomic, assign) int index;
 
 @end
 
@@ -70,6 +72,8 @@
                        [_config makeIPATask],
                        ];
     self.tasks = [NSMutableArray arrayWithArray:tasks];
+    self.taskTips = @[@"删除build目录...", @"清理工程...", @"编译工程...", @"拷贝静态库", @"创建打包目录...", @"打包..."];
+    self.progressIndicator.maxValue = tasks.count;
 }
 
 
@@ -107,12 +111,6 @@
             
             NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             NSLog(@"text = %@", text);
-            
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                NSString *string = [NSString stringWithFormat:@"%@%@", self.outputTextView.string, text];
-//                self.outputTextView.string = string;
-//                [self.outputTextView scrollRangeToVisible:NSMakeRange(self.outputTextView.string.length, 1)];
-//            });
         }
     });
 }
@@ -120,18 +118,15 @@
 // 此方法所在线程和[task launch]时所在线程是一样的
 // 这里就是在 packageQueue 中
 - (void)taskDidTerminated:(NSNotification *)notification {
-    static int index = 1;
     NSTask *task = notification.object;
     int status = [task terminationStatus];
-    NSLog(@"task[%@] terminated: %@", @(index), @(task.terminationReason));
+    NSLog(@"task[%@] terminated: %@", @(_index), @(task.terminationReason));
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.isCanceled) {
-            NSLog(@"cancel next task[%@], so return", @(index));
+            NSLog(@"cancel next task[%@], so return", @(_index));
             self.cancelButton.enabled = NO;
             self.packageButton.enabled = YES;
-            // 不知道为什么加了这句，取消打包就崩溃
-    //        [self executeTaskSync:self.tasks.lastObject];
             self.isCanceled = NO;
             
             [Util showAlertWithMessage:@"取消打包成功"];
@@ -140,7 +135,7 @@
         }
         
         if (status != 0) {
-            NSLog(@"Task[%@] failed.", @(index));
+            NSLog(@"Task[%@] failed.", @(_index));
             self.packageButton.enabled = NO;
             self.cancelButton.enabled = YES;
             [Util showAlertWithMessage:@"打包失败"];
@@ -148,16 +143,18 @@
             return;
         }
         
-        NSLog(@"Task[%@] success.", @(index));
+        NSLog(@"Task[%@] success.", @(_index));
+        [self.progressIndicator incrementBy:1];
+        
         // 移除掉完成的任务
         if (self.tasks.count != 0) {
             [self.tasks removeObjectAtIndex:0];
         }
-        
         if (self.tasks.count == 0) {
-            self.cancelButton.enabled = NO;
             self.packageButton.enabled = YES;
-            index = 1;
+            self.cancelButton.enabled = NO;
+            self.indicatorLabel.stringValue = @"无任务进行";
+            self.progressIndicator.doubleValue = 0;
             
             NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@-%@.ipa", _config.ipaPath, _config.project.name, _config.project.version];
             [Util showAlertWithMessage:message];
@@ -165,12 +162,14 @@
             return;
         }
         
-        index++;
+        _index++;
+        self.indicatorLabel.stringValue = self.taskTips[_index-1];
         [self executeTaskAsync:self.tasks.firstObject];
     });
 }
 
 - (void)clear {
+    _index = 1;
     [self removeObservers];
     
     NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _config.buildPath];
@@ -191,14 +190,15 @@
         return;
     }
     self.config.project.version = version;
+    self.index = 1;
     
     button.enabled = NO;
     self.cancelButton.enabled = YES;
     
-    self.outputTextView.string = @"";
-    
     [self makePackageTasks];
     [self addObservers];
+    
+    self.indicatorLabel.stringValue = self.taskTips[self.index-1];
     
     NSTask *task = self.tasks.firstObject;
     [self executeTaskAsync:task];
@@ -211,6 +211,8 @@
     
     self.isCanceled = YES;
     button.enabled = NO;
+    self.indicatorLabel.stringValue = @"无任务进行";
+    self.progressIndicator.doubleValue = 0;
 }
 
 // 项目根目录
