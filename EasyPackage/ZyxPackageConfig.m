@@ -15,16 +15,20 @@
     NSString *_uuid;
 }
 
++ (void)load {
+    NSLog(@"registe model : %@", NSStringFromClass(self.class));
+    [self registeModel:self.class];
+}
+
 - (void)commonInit {
-    self.name = @"";
-    self.rootPath = @"";
-    self.configuration = @"";
-    self.target = @"";
-    self.scheme = @"";
-    self.buildPath = @"";
-    self.ipaPath = @"";
-    self.provisionProfilePath = @"";
-    self.project = [ZyxIOSProjectInfo new];
+    _name = @"";
+    _rootPath = @"";
+    _configuration = @"";
+    _target = @"";
+    _scheme = @"";
+    _buildPath = @"";
+    _ipaPath = @"";
+    _provisionProfilePath = @"";
 }
 
 - (instancetype)init {
@@ -38,30 +42,6 @@
     if (self = [super init]) {
         [self commonInit];
         self.rootPath = rootPath;
-        
-        if (rootPath.length > 0) {
-            self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:rootPath];
-            self.buildPath = [rootPath stringByAppendingPathComponent:@"build"];
-            self.ipaPath = [rootPath stringByAppendingPathComponent:@"ipa"];
-        }
-    }
-    return self;
-}
-
-- (instancetype)initWithDict:(NSDictionary *)dict {
-    if (self = [super init]) {
-        self.name = dict[@"name"];
-        self.rootPath = dict[@"rootPath"];
-        self.configuration = dict[@"configuration"];
-        self.target = dict[@"target"];
-        self.scheme = dict[@"scheme"];
-        self.buildPath = dict[@"buildPath"];
-        self.ipaPath = dict[@"ipaPath"];
-        self.provisionProfilePath = dict[@"provisionProfilePath"];
-        
-        if (self.rootPath.length > 0) {
-            self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:self.rootPath];
-        }
     }
     return self;
 }
@@ -69,9 +49,17 @@
 - (void)setRootPath:(NSString *)rootPath {
     _rootPath = rootPath;
     
-    self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:rootPath];
-    self.buildPath = [rootPath stringByAppendingPathComponent:@"build"];
-    self.ipaPath = [rootPath stringByAppendingPathComponent:@"ipa"];
+    if ([Util isRootPathValid:rootPath]) {
+        if (self.project == nil) {
+            self.project = [[ZyxIOSProjectInfo alloc] initWithRootPath:rootPath];
+        } else {
+            self.project.rootPath = rootPath;
+        }
+        self.buildPath = [rootPath stringByAppendingPathComponent:@"build"];
+        self.ipaPath = [rootPath stringByAppendingPathComponent:@"ipa"];
+    } else {
+        NSLog(@"oh no, root path(%@) is invalid", rootPath);
+    }
 }
 
 - (void)setProvisionProfilePath:(NSString *)provisionProfilePath {
@@ -173,31 +161,12 @@
     return @[codesign, uuid];
 }
 
-- (NSDictionary *)jsonValues {
-    return @{@"name":       SafeString(self.name),
-             @"rootPath":   SafeString(self.rootPath),
-             @"configuration": SafeString(self.configuration),
-             @"target":     SafeString(self.target),
-             @"scheme":     SafeString(self.scheme),
-             @"ipaPath":    SafeString(self.ipaPath),
-             @"provisionProfilePath": SafeString(self.provisionProfilePath),
-             };
-}
-
-+ (NSMutableArray<ZyxPackageConfig *> *)localConfigs {
-    NSString *configsFilePath = [[NSBundle mainBundle] pathForResource:@"configs" ofType:@"plist"];
-    
-    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:configsFilePath];
-    NSArray *configDicts = plist[@"configs"];
-    if (configDicts == nil) {
-        return nil;
-    }
-    
-    NSMutableArray *configs = [NSMutableArray array];
-    for (NSDictionary *dict in configDicts) {
-        ZyxPackageConfig *config = [[ZyxPackageConfig alloc] initWithDict:dict];
-        [configs addObject:config];
-    }
++ (NSArray<ZyxPackageConfig *> *)localConfigs {
+    __block NSArray *configs;
+    [[ZyxFMDBManager sharedInstance] query:[NSValue valueWithPointer:(__bridge const void * _Nullable)(ZyxPackageConfig.class)] withCompletion:^(BOOL success, NSArray *models) {
+        configs = models;
+        
+    }];
     return configs;
 }
 

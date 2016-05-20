@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ZyxIOSProjectInfo.h"
 
-@interface ZyxPackageConfig : NSObject
+@interface ZyxPackageConfig : ZyxBaseModel
 
 @property (nonatomic, strong) ZyxIOSProjectInfo *project;
 @property (nonatomic, copy) NSString *name;
@@ -22,14 +22,11 @@
 @property (nonatomic, copy) NSString *provisionProfilePath;
 
 - (instancetype)initWithRootPath:(NSString *)rootPath;
-- (instancetype)initWithDict:(NSDictionary *)dict;
 
 - (NSTask *)buildTask;
 - (NSTask *)makeIPATask;
 - (NSTask *)copyStaticLibrariesTask;
 
-- (NSDictionary *)jsonValues;
-
-+ (NSMutableArray<ZyxPackageConfig *> *)localConfigs;
++ (NSArray<ZyxPackageConfig *> *)localConfigs;
 
 @end

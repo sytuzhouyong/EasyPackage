@@ -8,10 +8,20 @@
 
 #import "ZyxIOSProjectInfo.h"
 #import "ZyxTaskUtil.h"
+#import "Util.h"
 
 const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
 
 @implementation ZyxIOSProjectInfo
+
++ (void)load {
+    NSLog(@"registe model : %@", NSStringFromClass(self.class));
+    [self registeModel:self.class];
+}
+
++ (NSArray *)ignoredProperties {
+    return @[@"targets", @"configurations", @"schemes", @"staticLibrariesPaths"];
+}
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -25,16 +35,22 @@ const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
 - (instancetype)initWithRootPath:(NSString *)rootPath {
     if (self = [super init]) {
         self.rootPath = rootPath;
-        
-        if (rootPath.length > 0) {
-            self.name = [self getProjectName];
-            self.version = [self getProjectVersion];
-            self.isWorkspace = [self judgeIsWorkspace];
-            self.staticLibrariesPaths = [self getStaticLibrariesPaths];
-            [self setupProjectConfigs];
-        }
     }
     return self;
+}
+
+- (void)setRootPath:(NSString *)rootPath {
+    _rootPath = [rootPath copy];
+    
+    if ([Util isRootPathValid:rootPath]) {
+        self.name = [self getProjectName];
+        self.version = [self getProjectVersion];
+        self.isWorkspace = [self judgeIsWorkspace];
+        self.staticLibrariesPaths = [self getStaticLibrariesPaths];
+        [self setupProjectConfigs];
+    } else {
+        NSLog(@"oh no, root path(%@) is invalid", rootPath);
+    }
 }
 
 - (BOOL)judgeIsWorkspace {

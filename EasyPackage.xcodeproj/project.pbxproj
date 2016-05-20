@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		251F2EDE1CE313D600FE27C0 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 251F2EDD1CE313D600FE27C0 /* Util.m */; };
+		25423B381CEDBD73008B5826 /* ZyxBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 25423B241CEDBD73008B5826 /* ZyxBaseModel.m */; };
+		25423B391CEDBD73008B5826 /* ZyxFieldAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 25423B261CEDBD73008B5826 /* ZyxFieldAttribute.m */; };
+		25423B3A1CEDBD73008B5826 /* ZyxFMDBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25423B281CEDBD73008B5826 /* ZyxFMDBManager.m */; };
+		25423B3B1CEDBD73008B5826 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 25423B2E1CEDBD73008B5826 /* FMDatabase.m */; };
+		25423B3C1CEDBD73008B5826 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 25423B301CEDBD73008B5826 /* FMDatabaseAdditions.m */; };
+		25423B3D1CEDBD73008B5826 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 25423B321CEDBD73008B5826 /* FMDatabasePool.m */; };
+		25423B3E1CEDBD73008B5826 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 25423B341CEDBD73008B5826 /* FMDatabaseQueue.m */; };
+		25423B3F1CEDBD73008B5826 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 25423B371CEDBD73008B5826 /* FMResultSet.m */; };
+		25423B411CEDD5DD008B5826 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 25423B401CEDD5DD008B5826 /* libsqlite3.0.tbd */; };
 		259D328A1CE1BC0B007ADFE0 /* ManageConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 259D32881CE1BC0B007ADFE0 /* ManageConfigViewController.m */; };
 		259D328B1CE1BC0B007ADFE0 /* ManageConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259D32891CE1BC0B007ADFE0 /* ManageConfigViewController.xib */; };
 		25B037331CCE5DF5004EFD40 /* PackageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25B037321CCE5DF5004EFD40 /* PackageViewController.xib */; };
@@ -25,6 +34,28 @@
 /* Begin PBXFileReference section */
 		251F2EDC1CE313D600FE27C0 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
 		251F2EDD1CE313D600FE27C0 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
+		25423B221CEDBD73008B5826 /* EasyFMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EasyFMDB.h; sourceTree = "<group>"; };
+		25423B231CEDBD73008B5826 /* ZyxBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxBaseModel.h; sourceTree = "<group>"; };
+		25423B241CEDBD73008B5826 /* ZyxBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxBaseModel.m; sourceTree = "<group>"; };
+		25423B251CEDBD73008B5826 /* ZyxFieldAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxFieldAttribute.h; sourceTree = "<group>"; };
+		25423B261CEDBD73008B5826 /* ZyxFieldAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxFieldAttribute.m; sourceTree = "<group>"; };
+		25423B271CEDBD73008B5826 /* ZyxFMDBManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxFMDBManager.h; sourceTree = "<group>"; };
+		25423B281CEDBD73008B5826 /* ZyxFMDBManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZyxFMDBManager.m; sourceTree = "<group>"; };
+		25423B291CEDBD73008B5826 /* ZyxMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxMacro.h; sourceTree = "<group>"; };
+		25423B2A1CEDBD73008B5826 /* ZyxSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxSingleton.h; sourceTree = "<group>"; };
+		25423B2B1CEDBD73008B5826 /* ZyxTypedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZyxTypedef.h; sourceTree = "<group>"; };
+		25423B2D1CEDBD73008B5826 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		25423B2E1CEDBD73008B5826 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		25423B2F1CEDBD73008B5826 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		25423B301CEDBD73008B5826 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		25423B311CEDBD73008B5826 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		25423B321CEDBD73008B5826 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		25423B331CEDBD73008B5826 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		25423B341CEDBD73008B5826 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		25423B351CEDBD73008B5826 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+		25423B361CEDBD73008B5826 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		25423B371CEDBD73008B5826 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		25423B401CEDD5DD008B5826 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		259D32871CE1BC0B007ADFE0 /* ManageConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageConfigViewController.h; sourceTree = "<group>"; };
 		259D32881CE1BC0B007ADFE0 /* ManageConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageConfigViewController.m; sourceTree = "<group>"; };
 		259D32891CE1BC0B007ADFE0 /* ManageConfigViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ManageConfigViewController.xib; sourceTree = "<group>"; };
@@ -52,12 +83,48 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25423B411CEDD5DD008B5826 /* libsqlite3.0.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		25423B211CEDBD73008B5826 /* EasyFMDB */ = {
+			isa = PBXGroup;
+			children = (
+				25423B221CEDBD73008B5826 /* EasyFMDB.h */,
+				25423B231CEDBD73008B5826 /* ZyxBaseModel.h */,
+				25423B241CEDBD73008B5826 /* ZyxBaseModel.m */,
+				25423B251CEDBD73008B5826 /* ZyxFieldAttribute.h */,
+				25423B261CEDBD73008B5826 /* ZyxFieldAttribute.m */,
+				25423B271CEDBD73008B5826 /* ZyxFMDBManager.h */,
+				25423B281CEDBD73008B5826 /* ZyxFMDBManager.m */,
+				25423B291CEDBD73008B5826 /* ZyxMacro.h */,
+				25423B2A1CEDBD73008B5826 /* ZyxSingleton.h */,
+				25423B2B1CEDBD73008B5826 /* ZyxTypedef.h */,
+			);
+			path = EasyFMDB;
+			sourceTree = "<group>";
+		};
+		25423B2C1CEDBD73008B5826 /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				25423B2D1CEDBD73008B5826 /* FMDatabase.h */,
+				25423B2E1CEDBD73008B5826 /* FMDatabase.m */,
+				25423B2F1CEDBD73008B5826 /* FMDatabaseAdditions.h */,
+				25423B301CEDBD73008B5826 /* FMDatabaseAdditions.m */,
+				25423B311CEDBD73008B5826 /* FMDatabasePool.h */,
+				25423B321CEDBD73008B5826 /* FMDatabasePool.m */,
+				25423B331CEDBD73008B5826 /* FMDatabaseQueue.h */,
+				25423B341CEDBD73008B5826 /* FMDatabaseQueue.m */,
+				25423B351CEDBD73008B5826 /* FMDB.h */,
+				25423B361CEDBD73008B5826 /* FMResultSet.h */,
+				25423B371CEDBD73008B5826 /* FMResultSet.m */,
+			);
+			path = FMDB;
+			sourceTree = "<group>";
+		};
 		25C27E511CCE587B00858788 = {
 			isa = PBXGroup;
 			children = (
@@ -89,6 +156,8 @@
 				25C27E721CCE598300858788 /* PackageViewController.h */,
 				25C27E731CCE598300858788 /* PackageViewController.m */,
 				25B037321CCE5DF5004EFD40 /* PackageViewController.xib */,
+				25423B211CEDBD73008B5826 /* EasyFMDB */,
+				25423B2C1CEDBD73008B5826 /* FMDB */,
 				25C27E601CCE587B00858788 /* Supporting Files */,
 				251F2EDC1CE313D600FE27C0 /* Util.h */,
 				251F2EDD1CE313D600FE27C0 /* Util.m */,
@@ -106,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				25C27E611CCE587B00858788 /* main.m */,
+				25423B401CEDD5DD008B5826 /* libsqlite3.0.tbd */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -182,12 +252,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25423B3A1CEDBD73008B5826 /* ZyxFMDBManager.m in Sources */,
 				25C27E7D1CCE598300858788 /* ZyxTaskUtil.m in Sources */,
+				25423B391CEDBD73008B5826 /* ZyxFieldAttribute.m in Sources */,
+				25423B3B1CEDBD73008B5826 /* FMDatabase.m in Sources */,
+				25423B381CEDBD73008B5826 /* ZyxBaseModel.m in Sources */,
+				25423B3E1CEDBD73008B5826 /* FMDatabaseQueue.m in Sources */,
+				25423B3F1CEDBD73008B5826 /* FMResultSet.m in Sources */,
 				259D328A1CE1BC0B007ADFE0 /* ManageConfigViewController.m in Sources */,
 				25C27E7A1CCE598300858788 /* PackageViewController.m in Sources */,
 				25C27E621CCE587B00858788 /* main.m in Sources */,
+				25423B3C1CEDBD73008B5826 /* FMDatabaseAdditions.m in Sources */,
 				25C27E5F1CCE587B00858788 /* AppDelegate.m in Sources */,
 				25C27E7C1CCE598300858788 /* ZyxPackageConfig.m in Sources */,
+				25423B3D1CEDBD73008B5826 /* FMDatabasePool.m in Sources */,
 				25C27E7B1CCE598300858788 /* ZyxIOSProjectInfo.m in Sources */,
 				251F2EDE1CE313D600FE27C0 /* Util.m in Sources */,
 			);

@@ -25,7 +25,7 @@
     // Do view setup here.
     self.configsFilePath = [[NSBundle mainBundle] pathForResource:@"configs" ofType:@"plist"];
     
-    self.configs = [ZyxPackageConfig localConfigs];
+    self.configs = [NSMutableArray arrayWithArray:[ZyxPackageConfig localConfigs]];
     if (self.configs.count == 0) {
         return;
     }
@@ -37,11 +37,11 @@
     [self.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
     self.tableView.usesAlternatingRowBackgroundColors = YES;
     
-    ZyxPackageConfig *config = self.configs[0];
-    self.nameTextField.stringValue = config.name;
-    self.rootPathTextField.stringValue = config.rootPath;
-    self.ipaPathTextField.stringValue = config.ipaPath;
-    self.provisionProfilePathTextField.stringValue = config.provisionProfilePath;
+    ZyxPackageConfig *config = self.configs[index];
+    self.nameTextField.stringValue = SafeString(config.name);
+    self.rootPathTextField.stringValue = SafeString(config.rootPath);
+    self.ipaPathTextField.stringValue = SafeString(config.ipaPath);
+    self.provisionProfilePathTextField.stringValue = SafeString(config.provisionProfilePath);
     [self updateUIWithConfig:config];
 }
 
@@ -84,6 +84,8 @@
         ZyxPackageConfig *config = self.configs[index];
         [self updateUIWithConfig:config];
     }
+    
+    self.editingIndex = index;
 }
 
 #pragma mark - Button Actions
@@ -91,35 +93,25 @@
 // 项目根目录
 - (IBAction)selectProjectRootPath:(NSButton *)button {
     if ([Util selectPathInTextField:self.rootPathTextField]) {
-        ZyxPackageConfig *config = [[ZyxPackageConfig alloc] initWithRootPath:self.rootPathTextField.stringValue];
-        config.name = self.nameTextField.stringValue;
-        [self updateUIWithConfig:config];
+        ZyxPackageConfig *config = self.configs[self.editingIndex];
+        config.rootPath = self.rootPathTextField.stringValue;
         
-        NSInteger index = [self.tableView selectedRow];
-        if (index != -1) {
-            [self.configs replaceObjectAtIndex:index withObject:config];
-        }
+        [self updateUIWithConfig:config];
     }
 }
 
 - (IBAction)selectIPAPathButtonPressed:(NSButton *)button {
     [Util selectPathInTextField:self.ipaPathTextField];
     
-    NSInteger index = [self.tableView selectedRow];
-    if (index != -1) {
-        ZyxPackageConfig *config = self.configs[index];
-        config.ipaPath = self.ipaPathTextField.stringValue;
-    }
+    ZyxPackageConfig *config = self.configs[self.editingIndex];
+    config.ipaPath = self.ipaPathTextField.stringValue;
 }
 
 - (IBAction)selectProvisionProfilePathButtonPressed:(NSButton *)button {
     [Util selectFileInTextField:self.provisionProfilePathTextField];
     
-    NSInteger index = [self.tableView selectedRow];
-    if (index != -1) {
-        ZyxPackageConfig *config = self.configs[index];
-        config.provisionProfilePath = self.provisionProfilePathTextField.stringValue;
-    }
+    ZyxPackageConfig *config = self.configs[self.editingIndex];
+    config.provisionProfilePath = self.provisionProfilePathTextField.stringValue;
 }
 
 - (IBAction)addConfigButtonPressed:(id)sender {
@@ -128,6 +120,8 @@
     ZyxPackageConfig *config = [ZyxPackageConfig new];
     config.name = @"新配置";
     [self.configs addObject:config];
+    [config save];
+    self.editingIndex = self.configs.count - 1;
     
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:self.configs.count-1];
     [self.tableView beginUpdates];
@@ -139,30 +133,43 @@
     self.configurationsBox.stringValue = @"";
     self.targetsBox.stringValue = @"";
     self.schemesBox.stringValue = @"";
+    
+    [self.packageVC addConfigMenuItemWithName:config.name];
 }
 
 - (IBAction)saveConfigButtonPressed:(id)sender {
-    NSMutableArray *configs = [NSMutableArray array];
-    for (ZyxPackageConfig *item in self.configs) {
-        [configs addObject:[item jsonValues]];
+    if (self.editingIndex >= self.configs.count) {
+        return;
     }
-    NSDictionary *dict = @{@"configs": configs};
-    if (![dict writeToFile:self.configsFilePath atomically:YES]) {
-        [Util showAlertWithMessage:@"保存配置失败"];
-    } else {
+    
+    ZyxPackageConfig *config = self.configs[self.editingIndex];
+    config.name = self.nameTextField.stringValue;
+    config.rootPath = self.rootPathTextField.stringValue;
+    config.project.version = self.versionTextField.stringValue;
+    config.configuration = self.configurationsBox.stringValue;
+    config.target = self.targetsBox.stringValue;
+    config.scheme = self.schemesBox.stringValue;
+    config.ipaPath = self.ipaPathTextField.stringValue;
+    config.provisionProfilePath = self.provisionProfilePathTextField.stringValue;
+    
+    if ([config update]) {
         [self.tableView reloadData];
+    } else {
+        [Util showAlertWithMessage:@"保存配置失败"];
     }
+    
+    [self.packageVC updateConfigMenuItemAtIndex:self.editingIndex+1 withName:config.name];
 }
 
 #pragma mark - Util Methods
 
 - (void)updateUIWithConfig:(ZyxPackageConfig *)config {
     ZyxIOSProjectInfo *project = config.project;
-    self.nameTextField.stringValue = config.name;
-    self.versionTextField.stringValue = project.version;
-    self.rootPathTextField.stringValue = config.rootPath;
-    self.ipaPathTextField.stringValue = config.ipaPath;
-    self.provisionProfilePathTextField.stringValue = config.provisionProfilePath;
+    self.nameTextField.stringValue = SafeString(config.name);
+    self.versionTextField.stringValue = SafeString(project.version);
+    self.rootPathTextField.stringValue = SafeString(config.rootPath);
+    self.ipaPathTextField.stringValue = SafeString(config.ipaPath);
+    self.provisionProfilePathTextField.stringValue = SafeString(config.provisionProfilePath);
     
     [self.configurationsBox removeAllItems];
     [self.targetsBox removeAllItems];

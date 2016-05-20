@@ -11,6 +11,7 @@
 #import "ZyxTaskUtil.h"
 #import "Util.h"
 #import "AppDelegate.h"
+#import "ManageConfigViewController.h"
 
 
 @interface PackageViewController () <NSWindowDelegate>
@@ -38,6 +39,7 @@
     manageConfigMenuItem.target = self;
     manageConfigMenuItem.action = @selector(configManageButtonPressed);
     
+    [[ZyxFMDBManager sharedInstance] createDBWithName:@"config"];
     [self addConfigItems];
 }
 
@@ -50,15 +52,11 @@
 - (void)addConfigItems {
     NSMenu *configMenu = [NSApp mainMenu].itemArray[1].submenu;
     
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSArray<ZyxPackageConfig *> *configs = [ZyxPackageConfig localConfigs];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            for (ZyxPackageConfig *config in configs) {
-                NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:config.name action:@selector(menuItemSelected:) keyEquivalent:@""];
-                [configMenu addItem:item];
-            }
-        });
-    });
+    NSArray<ZyxPackageConfig *> *configs = [ZyxPackageConfig localConfigs];
+    for (ZyxPackageConfig *config in configs) {
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:config.name action:@selector(menuItemSelected:) keyEquivalent:@""];
+        [configMenu addItem:item];
+    }
 }
 
 - (void)menuItemSelected:(NSMenuItem *)menuItem {
@@ -306,12 +304,12 @@
     }
 }
 
-#pragma mark -
-
 #pragma mark - 配置管理
 
 - (void)configManageButtonPressed {
     ManageConfigViewController *configVC = [[ManageConfigViewController alloc] initWithNibName:nil bundle:nil];
+    configVC.packageVC = self;
+    
     NSRect frame = configVC.view.frame;
     NSUInteger style =  NSTitledWindowMask | NSClosableWindowMask |NSMiniaturizableWindowMask | NSResizableWindowMask;
     NSWindow *window = [[NSWindow alloc] initWithContentRect:frame styleMask:style backing:NSBackingStoreRetained defer:NO];
@@ -321,6 +319,18 @@
     
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:window];
     [[NSApplication sharedApplication] runModalForWindow:windowController.window];
+}
+
+- (void)addConfigMenuItemWithName:(NSString *)name {
+    NSMenu *configMenu = [NSApp mainMenu].itemArray[1].submenu;
+    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:name action:@selector(menuItemSelected:) keyEquivalent:@""];
+    [configMenu addItem:item];
+}
+
+- (void)updateConfigMenuItemAtIndex:(NSInteger)index withName:(NSString *)name {
+    NSMenu *configMenu = [NSApp mainMenu].itemArray[1].submenu;
+    NSMenuItem *item = configMenu.itemArray[index];
+    item.title = name;
 }
 
 - (void)windowWillClose:(NSNotification *)notification {

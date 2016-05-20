@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EasyFMDB.h"
 
-@interface ZyxIOSProjectInfo : NSObject
+@interface ZyxIOSProjectInfo : ZyxBaseModel
 
 @property (nonatomic, copy  ) NSString *rootPath;
 @property (nonatomic, assign) BOOL isWorkspace;

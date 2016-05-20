@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PackageViewController.h"
 
 @interface ManageConfigViewController : NSViewController
 
@@ -20,5 +21,6 @@
 @property (nonatomic, strong) IBOutlet NSTextField *ipaPathTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *provisionProfilePathTextField;
 
+@property (nonatomic, weak) PackageViewController *packageVC;
 
 @end

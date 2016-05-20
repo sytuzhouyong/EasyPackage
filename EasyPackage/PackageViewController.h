@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "ManageConfigViewController.h"
 
 @interface PackageViewController : NSViewController
 
@@ -22,6 +21,9 @@
 @property (nonatomic, strong) IBOutlet NSProgressIndicator *progressIndicator;
 @property (nonatomic, strong) IBOutlet NSButton *packageButton;
 @property (nonatomic, strong) IBOutlet NSButton *cancelButton;
+
+- (void)addConfigMenuItemWithName:(NSString *)name;
+- (void)updateConfigMenuItemAtIndex:(NSInteger)index withName:(NSString *)name;
 
 @end
 
