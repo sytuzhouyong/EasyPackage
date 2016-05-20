@@ -73,10 +73,6 @@
     self.packageButton.enabled = self.config.project.version.length > 0;
 }
 
-// ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
-// 所以找到如下方法，打开 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication 脚本,
-// 找到 --resource-rules= , 删除这个参数，打包就没有错误了
-
 - (void)addObservers {
     NSLog(@"aha, add observer");
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(output:) name:NSFileHandleReadCompletionNotification object:nil];

@@ -76,8 +76,9 @@
 }
 
 // "ResourceRules.plist": cannot read resources 错误，需要工程内添加$(SDKROOT)/ResourceRules.plist
+// DEBUG_INFORMATION_FORMAT="dwarf" | "dwarf-with-dsym"
 - (NSTask *)buildTask {
-    NSMutableString *commonCommand = [NSMutableString stringWithFormat:@"-configuration %@ -sdk iphoneos CODE_SIGN_RESOURCE_RULES_PATH=\"iphoneos/ResourceRules.plist\" OBJROOT=%@ TARGET_BUILD_DIR=%@ ", _configuration, _buildPath, _buildPath];
+    NSMutableString *commonCommand = [NSMutableString stringWithFormat:@"-configuration %@ -sdk iphoneos CODE_SIGN_RESOURCE_RULES_PATH=\"iphoneos/ResourceRules.plist\" DEBUG_INFORMATION_FORMAT=\"dwarf\" OBJROOT=%@ TARGET_BUILD_DIR=%@ ", _configuration, _buildPath, _buildPath];
     // @" \\"
     
     if (_provisionProfilePath.length > 0) {
