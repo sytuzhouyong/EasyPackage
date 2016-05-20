@@ -43,6 +43,7 @@ const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
     _rootPath = [rootPath copy];
     
     if ([Util isRootPathValid:rootPath]) {
+        // TODO: 待优化，耗时太长
         self.name = [self getProjectName];
         self.version = [self getProjectVersion];
         self.isWorkspace = [self judgeIsWorkspace];

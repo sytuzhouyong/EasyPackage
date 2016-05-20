@@ -34,16 +34,22 @@
     self.packageButton.enabled = NO;
     self.cancelButton.enabled = NO;
  
-    NSMenuItem *manageConfigMenuItem = [self configMenuItem];
+    NSMenuItem *manageConfigMenuItem = [self configMenuItemAtIndex:0];
     manageConfigMenuItem.target = self;
     manageConfigMenuItem.action = @selector(configManageButtonPressed);
     
     [self addConfigItems];
+    
+    NSInteger index = [[NSUserDefaults standardUserDefaults] integerForKey:@"LastEditConfigIndex"];
+    if (self.configs.count < index + 1) {
+        index = 0;
+    }
+    [self menuItemSelected:[self configMenuItemAtIndex:index + 1]];
 }
 
-- (NSMenuItem *)configMenuItem {
+- (NSMenuItem *)configMenuItemAtIndex:(NSInteger)index {
     NSMenuItem *configMenuItems = [NSApp mainMenu].itemArray[1];
-    NSMenuItem *manageConfigMenuItem = configMenuItems.submenu.itemArray.firstObject;
+    NSMenuItem *manageConfigMenuItem = configMenuItems.submenu.itemArray[index];
     return manageConfigMenuItem;
 }
 
@@ -60,8 +66,11 @@
 
 - (void)menuItemSelected:(NSMenuItem *)menuItem {
     NSInteger index = menuItem.keyEquivalent.integerValue - 1;
-    ZyxPackageConfig *config = self.configs[index];
-    [self updateUIWithConfig:config];
+    self.config = self.configs[index];
+    [self updateUIWithConfig:self.config];
+    
+    [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"LastEditConfigIndex"];
+    self.packageButton.enabled = self.config.project.version.length > 0;
 }
 
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
@@ -144,8 +153,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.isCanceled) {
             NSLog(@"cancel next task[%@], so return", @(_index));
-            self.cancelButton.enabled = NO;
-            self.packageButton.enabled = YES;
             self.isCanceled = NO;
             
             [Util showAlertWithMessage:@"取消打包成功"];
@@ -155,8 +162,6 @@
         
         if (status != 0) {
             NSLog(@"Task[%@] failed.", @(_index));
-            self.packageButton.enabled = NO;
-            self.cancelButton.enabled = YES;
             [Util showAlertWithMessage:@"打包失败"];
             [self clear];
             return;
@@ -170,11 +175,6 @@
             [self.tasks removeObjectAtIndex:0];
         }
         if (self.tasks.count == 0) {
-            self.packageButton.enabled = YES;
-            self.cancelButton.enabled = NO;
-            self.indicatorLabel.stringValue = @"无任务进行";
-            self.progressIndicator.doubleValue = 0;
-            
             NSString *message = [NSString stringWithFormat:@"打包成功!\r\n目录路径：%@/%@-%@.ipa", _config.ipaPath, _config.project.name, _config.project.version];
             [Util showAlertWithMessage:message];
             [self clear];
@@ -190,6 +190,11 @@
 - (void)clear {
     _index = 1;
     [self removeObservers];
+    
+    self.packageButton.enabled = YES;
+    self.cancelButton.enabled = NO;
+    self.indicatorLabel.stringValue = @"无任务进行";
+    self.progressIndicator.doubleValue = 0;
     
     NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _config.buildPath];
     NSTask *task = [ZyxTaskUtil taskWithShell:rmBuildCommand];
