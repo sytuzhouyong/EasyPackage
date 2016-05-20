@@ -19,6 +19,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
+    [[ZyxFMDBManager sharedInstance] createDBWithName:@"config"];
     
     PackageViewController *vc = [[PackageViewController alloc] initWithNibName:nil bundle:nil];
     // window参数不能为空

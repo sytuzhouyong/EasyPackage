@@ -12,9 +12,9 @@
 
 @interface ManageConfigViewController () <NSTabViewDelegate, NSTableViewDataSource>
 
-@property (nonatomic, strong) NSMutableArray<ZyxPackageConfig *> *configs;
 @property (nonatomic, assign) NSInteger editingIndex;
 @property (nonatomic, copy) NSString *configsFilePath;
+@property (nonatomic, strong) NSMutableArray<ZyxPackageConfig *> *configs;
 
 @end
 
@@ -25,7 +25,7 @@
     // Do view setup here.
     self.configsFilePath = [[NSBundle mainBundle] pathForResource:@"configs" ofType:@"plist"];
     
-    self.configs = [NSMutableArray arrayWithArray:[ZyxPackageConfig localConfigs]];
+    self.configs = _packageVC.configs;
     if (self.configs.count == 0) {
         return;
     }
@@ -130,9 +130,9 @@
     [self.tableView endUpdates];
 
     [self.nameTextField becomeFirstResponder];
-    self.configurationsBox.stringValue = @"";
-    self.targetsBox.stringValue = @"";
-    self.schemesBox.stringValue = @"";
+    self.configurationsComboBox.stringValue = @"";
+    self.targetsComboBox.stringValue = @"";
+    self.schemesComboBox.stringValue = @"";
     
     [self.packageVC addConfigMenuItemWithName:config.name];
 }
@@ -146,9 +146,9 @@
     config.name = self.nameTextField.stringValue;
     config.rootPath = self.rootPathTextField.stringValue;
     config.project.version = self.versionTextField.stringValue;
-    config.configuration = self.configurationsBox.stringValue;
-    config.target = self.targetsBox.stringValue;
-    config.scheme = self.schemesBox.stringValue;
+    config.configuration = self.configurationsComboBox.stringValue;
+    config.target = self.targetsComboBox.stringValue;
+    config.scheme = self.schemesComboBox.stringValue;
     config.ipaPath = self.ipaPathTextField.stringValue;
     config.provisionProfilePath = self.provisionProfilePathTextField.stringValue;
     
@@ -171,39 +171,39 @@
     self.ipaPathTextField.stringValue = SafeString(config.ipaPath);
     self.provisionProfilePathTextField.stringValue = SafeString(config.provisionProfilePath);
     
-    [self.configurationsBox removeAllItems];
-    [self.targetsBox removeAllItems];
-    [self.schemesBox removeAllItems];
-    self.configurationsBox.stringValue = @"";
-    self.targetsBox.stringValue = @"";
-    self.schemesBox.stringValue = @"";
+    [self.configurationsComboBox removeAllItems];
+    [self.targetsComboBox removeAllItems];
+    [self.schemesComboBox removeAllItems];
+    self.configurationsComboBox.stringValue = @"";
+    self.targetsComboBox.stringValue = @"";
+    self.schemesComboBox.stringValue = @"";
     
-    [self.configurationsBox addItemsWithObjectValues:project.configurations];
-    [self.targetsBox addItemsWithObjectValues:project.targets];
-    [self.schemesBox addItemsWithObjectValues:project.schemes];
+    [self.configurationsComboBox addItemsWithObjectValues:project.configurations];
+    [self.targetsComboBox addItemsWithObjectValues:project.targets];
+    [self.schemesComboBox addItemsWithObjectValues:project.schemes];
     
     if (project.configurations.count > 0) {
-        NSInteger index = [self.configurationsBox indexOfItemWithObjectValue:config.configuration];
+        NSInteger index = [self.configurationsComboBox indexOfItemWithObjectValue:config.configuration];
         if (NSNotFound == index) {
             index = project.configurations.count - 1;
         }
-        [self.configurationsBox selectItemAtIndex:index];
+        [self.configurationsComboBox selectItemAtIndex:index];
     }
 
     if (project.targets.count > 0) {
-        NSInteger index = [self.targetsBox indexOfItemWithObjectValue:config.target];
+        NSInteger index = [self.targetsComboBox indexOfItemWithObjectValue:config.target];
         if (NSNotFound == index) {
             index = 0;
         }
-        [self.targetsBox selectItemAtIndex:index];
+        [self.targetsComboBox selectItemAtIndex:index];
     }
     
     if (project.schemes.count > 0) {
-        NSInteger index = [self.schemesBox indexOfItemWithObjectValue:config.scheme];
+        NSInteger index = [self.schemesComboBox indexOfItemWithObjectValue:config.scheme];
         if (NSNotFound == index) {
             index = 0;
         }
-        [self.schemesBox selectItemAtIndex:index];
+        [self.schemesComboBox selectItemAtIndex:index];
     }
 }
 

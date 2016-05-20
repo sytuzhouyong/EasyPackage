@@ -7,7 +7,6 @@
 //
 
 #import "PackageViewController.h"
-#import "ZyxPackageConfig.h"
 #import "ZyxTaskUtil.h"
 #import "Util.h"
 #import "AppDelegate.h"
@@ -39,7 +38,6 @@
     manageConfigMenuItem.target = self;
     manageConfigMenuItem.action = @selector(configManageButtonPressed);
     
-    [[ZyxFMDBManager sharedInstance] createDBWithName:@"config"];
     [self addConfigItems];
 }
 
@@ -52,15 +50,18 @@
 - (void)addConfigItems {
     NSMenu *configMenu = [NSApp mainMenu].itemArray[1].submenu;
     
-    NSArray<ZyxPackageConfig *> *configs = [ZyxPackageConfig localConfigs];
-    for (ZyxPackageConfig *config in configs) {
-        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:config.name action:@selector(menuItemSelected:) keyEquivalent:@""];
+    self.configs = [NSMutableArray arrayWithArray:[ZyxPackageConfig localConfigs]];
+    for (int i=0; i<self.configs.count; i++) {
+        ZyxPackageConfig *config = self.configs[i];
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:config.name action:@selector(menuItemSelected:) keyEquivalent:@(i+1).stringValue];
         [configMenu addItem:item];
     }
 }
 
 - (void)menuItemSelected:(NSMenuItem *)menuItem {
-    ;
+    NSInteger index = menuItem.keyEquivalent.integerValue - 1;
+    ZyxPackageConfig *config = self.configs[index];
+    [self updateUIWithConfig:config];
 }
 
 // ResourceRules.plist 在Xcode7以后已经不准使用了，否则AppStore不让上架，但是这个是苹果的一个bug，不用又打包不通过
@@ -235,12 +236,12 @@
 
 // 项目根目录
 - (IBAction)selectProjectRootPath:(NSButton *)button {
-    BOOL selected = [Util selectPathInTextField:self.projectRootDirTextField];
+    BOOL selected = [Util selectPathInTextField:self.rootPathTextField];
     if (!selected) {
         return;
     }
     
-    NSString *rootPath = self.projectRootDirTextField.stringValue;
+    NSString *rootPath = self.rootPathTextField.stringValue;
     if (![Util isRootPathValid:rootPath]) {
         [Util showAlertWithMessage:@"该路径貌似不是一个有效的工程路径"];
         return;
@@ -276,8 +277,8 @@
 
 // IPA Path
 - (IBAction)selectIPAPathButtonPressed:(NSButton *)button {
-    [Util selectPathInTextField:self.ipaTextField];
-    NSString *path = self.ipaTextField.stringValue;
+    [Util selectPathInTextField:self.ipaPathTextField];
+    NSString *path = self.ipaPathTextField.stringValue;
     if (path.length != 0) {
         self.config.ipaPath = path;
     }
@@ -297,8 +298,8 @@
 
 // Profile File
 - (IBAction)selectProvisionProfilePathButtonPressed:(NSButton *)button {
-    [Util selectFileInTextField:self.profileTextField];
-    NSString *path = self.profileTextField.stringValue;
+    [Util selectFileInTextField:self.provisionProfilePathTextField];
+    NSString *path = self.provisionProfilePathTextField.stringValue;
     if (path.length != 0) {
         self.config.provisionProfilePath = path;
     }
@@ -335,6 +336,51 @@
 
 - (void)windowWillClose:(NSNotification *)notification {
     [[NSApplication sharedApplication] stopModal];
+}
+
+
+- (void)updateUIWithConfig:(ZyxPackageConfig *)config {
+    ZyxIOSProjectInfo *project = config.project;
+    self.versionTextField.stringValue = SafeString(project.version);
+    self.rootPathTextField.stringValue = SafeString(config.rootPath);
+    self.ipaPathTextField.stringValue = SafeString(config.ipaPath);
+    self.provisionProfilePathTextField.stringValue = SafeString(config.provisionProfilePath);
+    
+    self.configurationsComboBox.stringValue = @"";
+    [self.configurationsComboBox removeAllItems];
+    [self.configurationsComboBox addItemsWithObjectValues:project.configurations];
+    
+    self.targetsComboBox.stringValue = @"";
+    [self.targetsComboBox removeAllItems];
+    [self.targetsComboBox addItemsWithObjectValues:project.targets];
+    
+    self.schemesComboBox.stringValue = @"";
+    [self.schemesComboBox removeAllItems];
+    [self.schemesComboBox addItemsWithObjectValues:project.schemes];
+    
+    if (project.configurations.count > 0) {
+        NSInteger index = [self.configurationsComboBox indexOfItemWithObjectValue:config.configuration];
+        if (NSNotFound == index) {
+            index = project.configurations.count - 1;
+        }
+        [self.configurationsComboBox selectItemAtIndex:index];
+    }
+    
+    if (project.targets.count > 0) {
+        NSInteger index = [self.targetsComboBox indexOfItemWithObjectValue:config.target];
+        if (NSNotFound == index) {
+            index = 0;
+        }
+        [self.targetsComboBox selectItemAtIndex:index];
+    }
+    
+    if (project.schemes.count > 0) {
+        NSInteger index = [self.schemesComboBox indexOfItemWithObjectValue:config.scheme];
+        if (NSNotFound == index) {
+            index = 0;
+        }
+        [self.schemesComboBox selectItemAtIndex:index];
+    }
 }
 
 - (void)setRepresentedObject:(id)representedObject {

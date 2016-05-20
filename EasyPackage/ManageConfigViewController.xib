@@ -7,14 +7,14 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ManageConfigViewController">
             <connections>
-                <outlet property="configurationsBox" destination="8nE-o9-dNd" id="bmC-k2-dtB"/>
+                <outlet property="configurationsComboBox" destination="8nE-o9-dNd" id="bmC-k2-dtB"/>
                 <outlet property="ipaPathTextField" destination="um5-n9-5TF" id="JXq-9X-85k"/>
                 <outlet property="nameTextField" destination="acq-CY-tn1" id="GAr-K4-A7T"/>
                 <outlet property="provisionProfilePathTextField" destination="rPS-or-pao" id="qLx-3S-djg"/>
                 <outlet property="rootPathTextField" destination="ih1-aA-sLo" id="voN-aA-DKp"/>
-                <outlet property="schemesBox" destination="6dW-Ek-agN" id="r0n-wc-xhk"/>
+                <outlet property="schemesComboBox" destination="6dW-Ek-agN" id="r0n-wc-xhk"/>
                 <outlet property="tableView" destination="3Hx-bG-XRw" id="AKf-if-Mac"/>
-                <outlet property="targetsBox" destination="0yL-VG-sGr" id="8ah-wv-cnI"/>
+                <outlet property="targetsComboBox" destination="0yL-VG-sGr" id="8ah-wv-cnI"/>
                 <outlet property="versionTextField" destination="ng2-dt-g8q" id="8oQ-jA-ONp"/>
                 <outlet property="view" destination="NzR-dl-Otw" id="Gfh-s5-J2y"/>
             </connections>

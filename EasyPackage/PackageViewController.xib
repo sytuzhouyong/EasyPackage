@@ -11,11 +11,11 @@
                 <outlet property="cancelButton" destination="ZyO-iM-qlA" id="XFO-xr-L2d"/>
                 <outlet property="configurationsComboBox" destination="xYG-rc-jz5" id="Oqj-N2-0Sn"/>
                 <outlet property="indicatorLabel" destination="8v1-Ea-nrm" id="2AW-3F-VMh"/>
-                <outlet property="ipaTextField" destination="lGM-2u-LeZ" id="ntt-iQ-dbN"/>
+                <outlet property="ipaPathTextField" destination="lGM-2u-LeZ" id="dnQ-fP-M2j"/>
                 <outlet property="packageButton" destination="FPs-vc-miI" id="uUC-oD-EZR"/>
-                <outlet property="profileTextField" destination="ZIr-vT-MTK" id="doj-nR-9CE"/>
                 <outlet property="progressIndicator" destination="b2n-ct-Fon" id="CEk-2L-HtV"/>
-                <outlet property="projectRootDirTextField" destination="FxB-Fp-YDk" id="ToK-Kg-rUl"/>
+                <outlet property="provisionProfilePathTextField" destination="ZIr-vT-MTK" id="glR-Nf-pOq"/>
+                <outlet property="rootPathTextField" destination="FxB-Fp-YDk" id="F7I-4X-BbW"/>
                 <outlet property="schemesComboBox" destination="fKW-cs-2WA" id="88J-27-zm9"/>
                 <outlet property="targetsComboBox" destination="x4T-X6-UrU" id="PYR-hb-Laq"/>
                 <outlet property="versionTextField" destination="ugI-Mz-MpR" id="Mnj-ay-ULO"/>
