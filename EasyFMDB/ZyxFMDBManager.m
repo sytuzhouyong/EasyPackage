@@ -17,6 +17,18 @@
 #define EXECUTE_BLOCK1(__result) !block ?: block(__result)
 #define EXECUTE_BLOCK2(__result, __array) !block ?: block(__result, __array)
 
+#define OpenDB(__db) \
+    if (![__db open]) { \
+        LogError(@"oh no, open database failed"); \
+        return NO; \
+    }
+
+#define CloseDB(__db) \
+    if (![__db close]) { \
+        LogError(@"oh no, close database failed"); \
+        return NO; \
+    }
+
 @interface ZyxFMDBManager ()
 
 @property (nonatomic, strong) FMDatabaseQueue *dbQueue;
@@ -226,10 +238,10 @@ SINGLETON_IMPLEMENTATION(ZyxFMDBManager);
 
 - (BOOL)save:(ZyxBaseModel *)model {
     FMDatabase *db = [FMDatabase databaseWithPath:_dbPath];
-    [db open];
+    OpenDB(db);
     BOOL flag = [self saveModel:model inDatabase:db];
     [self checkUpdateSQLResult:db];
-    [db close];
+    CloseDB(db);
     return flag;
 }
 
@@ -370,10 +382,7 @@ queryPropertiesAndValues:(NSDictionary *)queries
 
 - (BOOL)update:(ZyxBaseModel *)model {
     FMDatabase *db = [FMDatabase databaseWithPath:_dbPath];
-    if (![db open]) {
-        LogError(@"oh no, open database failed");
-        return NO;
-    }
+    OpenDB(db);
     
     NSArray *array = [self makeUpdateSQL:model updateProperties:[model updatedPropertiesExceptId] queryProperties:@[@"id"] matches:nil logics:nil];
     NSString *sql = [array objectAtIndex:0];
@@ -381,7 +390,7 @@ queryPropertiesAndValues:(NSDictionary *)queries
     
     BOOL result = [db executeUpdate:sql withArgumentsInArray:values];
     [self checkUpdateSQLResult:db];
-    [db close];
+    CloseDB(db);
     return result;
 }
 
@@ -536,9 +545,12 @@ queryPropertiesAndValues:(NSDictionary *)queries
 
 - (BOOL)delete:(ZyxBaseModel *)model {
     FMDatabase *db = [FMDatabase databaseWithPath:_dbPath];
+    OpenDB(db);
+    
     BOOL result = [self deleteModel:model inDatabase:db];
     [self checkUpdateSQLResult:db];
-    [db close];
+    
+    CloseDB(db);
     return result;
 }
 

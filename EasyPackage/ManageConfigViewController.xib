@@ -356,12 +356,12 @@
                     </constraints>
                 </customView>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ewV-BF-0Xc">
-                    <rect key="frame" x="26" y="4" width="92" height="32"/>
+                    <rect key="frame" x="3" y="4" width="60" height="32"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="80" id="abU-Mw-tWI"/>
+                        <constraint firstAttribute="width" constant="48" id="abU-Mw-tWI"/>
                         <constraint firstAttribute="height" constant="21" id="hKz-p8-daZ"/>
                     </constraints>
-                    <buttonCell key="cell" type="push" title="添加配置" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dgW-IT-0Ke">
+                    <buttonCell key="cell" type="push" title="添加" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dgW-IT-0Ke">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" size="13" name=".PingFangSC-Regular"/>
                     </buttonCell>
@@ -383,19 +383,36 @@
                         <action selector="saveConfigButtonPressed:" target="-2" id="ZTW-D4-O8J"/>
                     </connections>
                 </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PgQ-be-VCu">
+                    <rect key="frame" x="75" y="4" width="60" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="48" id="VDT-wK-ps6"/>
+                        <constraint firstAttribute="height" constant="21" id="bM4-uy-qL5"/>
+                    </constraints>
+                    <buttonCell key="cell" type="push" title="删除" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="UWh-dx-q7Z">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" size="13" name=".PingFangSC-Regular"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="deleteCongfigButtonPressed:" target="-2" id="EIy-R5-WS5"/>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
                 <constraint firstItem="A8R-dp-6I6" firstAttribute="centerX" secondItem="vkq-tI-8w4" secondAttribute="centerX" id="1Rv-9J-tpn"/>
-                <constraint firstItem="ewV-BF-0Xc" firstAttribute="centerX" secondItem="aDg-J3-CmU" secondAttribute="centerX" id="1bt-HP-pUW"/>
+                <constraint firstItem="PgQ-be-VCu" firstAttribute="top" secondItem="aDg-J3-CmU" secondAttribute="bottom" constant="8" id="1k5-3x-sDW"/>
                 <constraint firstAttribute="bottom" secondItem="ewV-BF-0Xc" secondAttribute="bottom" constant="11" id="4qL-5W-HzI"/>
                 <constraint firstItem="ewV-BF-0Xc" firstAttribute="top" secondItem="aDg-J3-CmU" secondAttribute="bottom" constant="8" id="4v1-zR-Yuo"/>
                 <constraint firstItem="vkq-tI-8w4" firstAttribute="top" secondItem="NzR-dl-Otw" secondAttribute="top" id="JDG-5y-sGQ"/>
                 <constraint firstItem="aDg-J3-CmU" firstAttribute="leading" secondItem="NzR-dl-Otw" secondAttribute="leading" constant="2" id="YS4-Wa-rhv"/>
                 <constraint firstAttribute="bottom" secondItem="A8R-dp-6I6" secondAttribute="bottom" constant="11" id="aHH-QU-uNz"/>
                 <constraint firstItem="A8R-dp-6I6" firstAttribute="top" secondItem="vkq-tI-8w4" secondAttribute="bottom" constant="8" id="cBH-Zr-QqE"/>
+                <constraint firstItem="ewV-BF-0Xc" firstAttribute="leading" secondItem="NzR-dl-Otw" secondAttribute="leading" constant="9" id="cQs-k4-cxU"/>
+                <constraint firstAttribute="bottom" secondItem="PgQ-be-VCu" secondAttribute="bottom" constant="11" id="cep-9d-ZEI"/>
                 <constraint firstItem="aDg-J3-CmU" firstAttribute="top" secondItem="NzR-dl-Otw" secondAttribute="top" id="drg-8M-fwm"/>
                 <constraint firstItem="aDg-J3-CmU" firstAttribute="trailing" secondItem="vkq-tI-8w4" secondAttribute="leading" id="jNX-ho-euM"/>
                 <constraint firstAttribute="trailing" secondItem="vkq-tI-8w4" secondAttribute="trailing" id="rax-KS-glO"/>
+                <constraint firstItem="PgQ-be-VCu" firstAttribute="leading" secondItem="ewV-BF-0Xc" secondAttribute="trailing" constant="24" id="tBp-9Z-70g"/>
             </constraints>
             <point key="canvasLocation" x="20" y="39"/>
         </view>

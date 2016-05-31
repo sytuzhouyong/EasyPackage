@@ -13,7 +13,6 @@
 @interface ManageConfigViewController () <NSTabViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, assign) NSInteger editingIndex;
-@property (nonatomic, copy) NSString *configsFilePath;
 @property (nonatomic, strong) NSMutableArray<ZyxPackageConfig *> *configs;
 
 @end
@@ -23,8 +22,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
-    self.configsFilePath = [[NSBundle mainBundle] pathForResource:@"configs" ofType:@"plist"];
-    
     self.configs = _packageVC.configs;
     if (self.configs.count == 0) {
         return;
@@ -135,6 +132,23 @@
     self.schemesComboBox.stringValue = @"";
     
     [self.packageVC addConfigMenuItemWithName:config.name];
+}
+
+- (IBAction)deleteCongfigButtonPressed:(id)sender {
+    ZyxPackageConfig *config = self.configs[self.editingIndex];
+    if (![config delete]) {
+        [Util showAlertWithMessage:@"配置文件删除失败"];
+        return;
+    }
+    [self.configs removeObjectAtIndex:self.editingIndex];
+    
+    [self.tableView reloadData];
+    
+    self.editingIndex = MIN(self.editingIndex, self.configs.count-1);
+    if (self.editingIndex >= 0) {
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:self.editingIndex];
+        [self.tableView selectRowIndexes:indexSet byExtendingSelection:NO];
+    }
 }
 
 - (IBAction)saveConfigButtonPressed:(id)sender {
