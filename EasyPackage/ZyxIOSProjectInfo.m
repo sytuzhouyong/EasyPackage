@@ -61,14 +61,21 @@ const NSString *kPlistBuddy = @"/usr/libexec/PlistBuddy";
 }
 
 - (NSString *)getProjectName {
-    NSString *shell = [NSString stringWithFormat:@"find %@ -name *.xcodeproj", self.rootPath];
-    NSString *pathsString = [ZyxTaskUtil resultOfExecuteShell:shell];
-    return [pathsString.lastPathComponent stringByDeletingPathExtension];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    NSDirectoryEnumerator<NSString *> *enumerator = [manager enumeratorAtPath:self.rootPath];
+    NSString *filePath = @"";
+    while (nil != (filePath = [enumerator nextObject])) {
+        if ([filePath hasSuffix:@".xcworkspace"] || [filePath hasSuffix:@".xcodeproj"]) {
+            return [filePath.lastPathComponent stringByDeletingPathExtension];
+        }
+    }
+    NSLog(@"not find project file");
+    return @"";
 }
 
 - (NSString *)getProjectVersion {
     NSString *plistFilePath = [[self.rootPath stringByAppendingPathComponent:self.name] stringByAppendingPathComponent:@"Info.plist"];
-    NSString *shell = [NSString stringWithFormat:@"%@ -c \"Print CFBundleVersion\" %@", kPlistBuddy, plistFilePath];
+    NSString *shell = [NSString stringWithFormat:@"%@ -c \"Print CFBundleShortVersionString\" %@", kPlistBuddy, plistFilePath];
     NSString *version = [ZyxTaskUtil resultOfExecuteShell:shell];
     version  = [version stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     return version;

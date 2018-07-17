@@ -66,11 +66,13 @@
 
 - (void)menuItemSelected:(NSMenuItem *)menuItem {
     NSInteger index = menuItem.keyEquivalent.integerValue - 1;
-    self.config = self.configs[index];
-    [self updateUIWithConfig:self.config];
-    
-    [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"LastEditConfigIndex"];
-    self.packageButton.enabled = self.config.project.version.length > 0;
+    if (index >= 0) {
+        self.config = self.configs[index];
+        [self updateUIWithConfig:self.config];
+        
+        [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"LastEditConfigIndex"];
+        self.packageButton.enabled = self.config.project.version.length > 0;
+    }
 }
 
 - (void)addObservers {
@@ -86,10 +88,10 @@
 
 - (void)makePackageTasks {
     NSString *rmBuildCommand = [NSString stringWithFormat:@"rm -rf %@", _config.buildPath];
-    NSString *cleanProjectCommand = [NSString stringWithFormat:@"/usr/bin/xcodebuild clean -configuration %@", _config.configuration];
+//    NSString *cleanProjectCommand = [NSString stringWithFormat:@"/usr/bin/xcodebuild clean -configuration %@", _config.configuration];
     NSString *makeIPAPathCommand = [NSString stringWithFormat:@"mkdir -p %@", _config.ipaPath];
     NSArray *tasks = @[[ZyxTaskUtil taskWithShell:rmBuildCommand],
-                       [ZyxTaskUtil taskWithShell:cleanProjectCommand path:_config.rootPath],
+//                       [ZyxTaskUtil taskWithShell:cleanProjectCommand path:_config.rootPath],
                        [_config buildTask],
                        [_config copyStaticLibrariesTask],
                        [ZyxTaskUtil taskWithShell:makeIPAPathCommand],
@@ -256,19 +258,22 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             self.versionTextField.stringValue = project.version;
             
+            // configuration
             [self.configurationsComboBox removeAllItems];
             [self.configurationsComboBox addItemsWithObjectValues:project.configurations];
             [self.configurationsComboBox selectItemAtIndex:project.configurations.count-1];
+            config.configuration = project.configurations.lastObject;
             
+            // target
             [self.targetsComboBox removeAllItems];
-            [self.schemesComboBox removeAllItems];
             [self.targetsComboBox addItemsWithObjectValues:project.targets];
-            [self.schemesComboBox addItemsWithObjectValues:project.schemes];
             [self.targetsComboBox selectItemAtIndex:0];
-            [self.schemesComboBox selectItemAtIndex:0];
-            
-            config.configuration = project.configurations[0];
             config.target = project.targets[0];
+            
+            // scheme
+            [self.schemesComboBox removeAllItems];
+            [self.schemesComboBox addItemsWithObjectValues:project.schemes];
+            [self.schemesComboBox selectItemAtIndex:0];
             config.scheme = project.schemes[0];
             
             self.config = config;
